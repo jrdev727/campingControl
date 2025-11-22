@@ -1,0 +1,67 @@
+/* Estilos globales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa; /* Color de fondo claro */
+    color: #212529; /* Color de texto oscuro */
+}
+
+/* Personalización de tarjetas */
+.card {
+    border: none; /* Sin bordes */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0; /* Bordes redondeados en la cabecera */
+}
+
+/* Botones */
+.btn {
+    border-radius: 8px; /* Bordes redondeados en botones */
+    transition: transform 0.2s ease-in-out; /* Efecto hover suave */
+}
+
+.btn:hover {
+    transform: scale(1.05); /* Aumentar tamaño al pasar el mouse */
+}
+
+/* Alertas */
+.alert {
+    border-radius: 8px; /* Bordes redondeados */
+    margin-bottom: 20px; /* Espaciado inferior */
+}
+
+/* Formularios */
+.form-control {
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 10px; /* Más espacio interno */
+}
+
+/* Contenedor principal */
+.container {
+    margin-top: 30px; /* Espaciado superior */
+}
+
+/* Personalización de la barra de navegación */
+.navbar {
+    border-radius: 0; /* Sin bordes redondeados */
+}
+
+.navbar-brand {
+    font-weight: bold; /* Texto en negrita */
+}
+
+.nav-link {
+    color: white !important; /* Color blanco para todos los enlaces */
+}
+
+.nav-link:hover {
+    color: #ffcc00 !important; /* Cambio de color al pasar el mouse */
+}
+
+/* Botón de cerrar sesión */
+.nav-link.btn-danger {
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 5px 15px; /* Espaciado interno */
+}
