@@ -226,6 +226,15 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
 
     // Imprimir
     window.print();
+
+    // Limpiar carrito después de imprimir
+    setTimeout(() => {
+        carrito = [];
+        actualizarCarrito();
+        document.getElementById('btn-imprimir').style.display = 'none';
+        document.getElementById('btn-registrar').style.display = 'block';
+        mostrarAlerta('Carrito limpiado. Listo para nueva venta.', 'success');
+    }, 500);
 });
 
 // Función para mostrar alertas
