@@ -17,11 +17,45 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Acceso - Camping Sonrisas</title>
+    <title>Punto de Venta - Camping Sonrisas</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #ticket-print, #ticket-print * { visibility: visible; }
+            #ticket-print {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 80mm;
+            }
+        }
+        .entrada-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .entrada-item-info {
+            flex: 1;
+        }
+        .entrada-item-actions button {
+            padding: 4px 12px;
+            font-size: 12px;
+        }
+        .total-section {
+            background: var(--brand-50);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <?php include 'includes/sidebar.php'; ?>
@@ -33,25 +67,18 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
             <!-- Contenedor de alertas -->
             <div id="alerta" class="alert d-none" role="alert"></div>
 
-            <!-- Card de formulario -->
             <div class="row">
-                <div class="col-12 col-lg-8 col-xl-6 mx-auto">
+                <!-- Columna izquierda: Formulario de entrada -->
+                <div class="col-12 col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Registrar Nueva Entrada</h3>
+                            <h3 class="card-title">Agregar Entradas</h3>
                             <p class="text-gray-500 mb-0 mt-2" style="font-size: 14px;">
-                                Complete los datos del visitante para registrar su entrada al camping
+                                Seleccione el tipo de entrada y la cantidad
                             </p>
                         </div>
                         <div class="card-body">
-                            <form id="formulario-ingreso">
-                                <div class="mb-4">
-                                    <label for="dni" class="form-label">DNI del Visitante</label>
-                                    <input type="text" class="form-control" id="dni" name="dni"
-                                           placeholder="Ej: 12345678" required>
-                                    <small class="text-gray-500">Ingrese el número de DNI sin puntos ni espacios</small>
-                                </div>
-
+                            <form id="formulario-agregar">
                                 <div class="mb-4">
                                     <label for="tipo-entrada" class="form-label">Tipo de Entrada</label>
                                     <select class="form-select" id="tipo-entrada" name="tipo_entrada" required>
@@ -59,14 +86,13 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                         <option value="turista_niño">Turista (Niño) - $5.000</option>
                                         <option value="local">Local - $3.000</option>
                                     </select>
-                                    <small class="text-gray-500">Seleccione el tipo de entrada según corresponda</small>
                                 </div>
 
                                 <div class="mb-4">
-                                    <label for="edad" class="form-label">Edad del Visitante</label>
-                                    <input type="number" class="form-control" id="edad" name="edad"
-                                           placeholder="Ej: 25" min="1" max="120" required>
-                                    <small class="text-gray-500">Ingrese la edad del visitante</small>
+                                    <label for="cantidad" class="form-label">Cantidad</label>
+                                    <input type="number" class="form-control" id="cantidad" name="cantidad"
+                                           value="1" min="1" max="100" required>
+                                    <small class="text-gray-500">¿Cuántas entradas de este tipo?</small>
                                 </div>
 
                                 <div class="d-grid gap-2">
@@ -74,16 +100,16 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                              style="display: inline-block; vertical-align: middle; margin-right: 8px;">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                  d="M12 4v16m8-8H4"/>
                                         </svg>
-                                        Registrar Entrada
+                                        Agregar al Carrito
                                     </button>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <!-- Información adicional -->
+                    <!-- Tarifas -->
                     <div class="card mt-4">
                         <div class="card-header">
                             <h3 class="card-title">Tarifas de Entrada</h3>
@@ -124,12 +150,86 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                         </div>
                     </div>
                 </div>
+
+                <!-- Columna derecha: Carrito y resumen -->
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="card-title mb-0">Carrito de Entradas</h3>
+                                <p class="text-gray-500 mb-0 mt-1" style="font-size: 14px;">
+                                    <span id="total-items">0</span> entrada(s) en el carrito
+                                </p>
+                            </div>
+                            <button id="btn-limpiar" class="btn btn-sm btn-outline-danger" style="display: none;">
+                                Limpiar
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="carrito-lista" class="mb-3">
+                                <p class="text-center text-gray-500 py-5">
+                                    <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin: 0 auto; display: block; opacity: 0.3;">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    El carrito está vacío
+                                </p>
+                            </div>
+
+                            <div class="total-section" id="total-section" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div style="font-size: 16px; font-weight: 600; color: var(--gray-700);">
+                                        Total a Cobrar:
+                                    </div>
+                                    <div id="total-precio" style="font-size: 32px; font-weight: 700; color: var(--brand-600);">
+                                        $0
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button id="btn-registrar" class="btn btn-success btn-lg">
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                             style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        Registrar Venta
+                                    </button>
+                                    <button id="btn-imprimir" class="btn btn-outline-primary" style="display: none;">
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                             style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                        </svg>
+                                        Imprimir Ticket
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
+    <!-- Ticket oculto para impresión -->
+    <div id="ticket-print" style="display: none;">
+        <div style="text-align: center; font-family: monospace; width: 80mm; padding: 10mm;">
+            <h2 style="margin: 0; font-size: 18px;">CAMPING SONRISAS</h2>
+            <p style="margin: 5px 0; font-size: 12px;">Ticket de Entrada</p>
+            <hr style="border: 1px dashed #000;">
+            <div id="ticket-contenido" style="text-align: left; font-size: 14px;"></div>
+            <hr style="border: 1px dashed #000;">
+            <p style="text-align: center; margin: 10px 0; font-size: 16px; font-weight: bold;">
+                TOTAL: <span id="ticket-total"></span>
+            </p>
+            <p style="text-align: center; margin: 5px 0; font-size: 10px;" id="ticket-fecha"></p>
+            <p style="text-align: center; margin: 15px 0 0 0; font-size: 10px;">¡Gracias por su visita!</p>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/pos.js"></script>
 </body>
 </html>
