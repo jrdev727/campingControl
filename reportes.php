@@ -157,9 +157,9 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                 <label>Tipo de Entrada</label>
                                 <select class="form-select" id="filtro-tipo-entrada">
                                     <option value="">Todos</option>
-                                    <option value="turista_adulto">Turista Adulto</option>
-                                    <option value="turista_niño">Turista Niño</option>
-                                    <option value="local">Local</option>
+                                    <option value="turista_adulto">No Residente (Adulto)</option>
+                                    <option value="turista_niño">No Residente (Niño)</option>
+                                    <option value="local">Residente</option>
                                 </select>
                             </div>
                             <div class="col-md-1 d-flex align-items-end">

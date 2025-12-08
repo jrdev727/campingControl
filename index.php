@@ -82,9 +82,9 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                 <div class="mb-4">
                                     <label for="tipo-entrada" class="form-label">Tipo de Entrada</label>
                                     <select class="form-select" id="tipo-entrada" name="tipo_entrada" required>
-                                        <option value="turista_adulto">Turista (Adulto) - $8.000</option>
-                                        <option value="turista_niño">Turista (Niño) - $5.000</option>
-                                        <option value="local">Local - $3.000</option>
+                                        <option value="turista_adulto">No Residente (Adulto) - $8.000</option>
+                                        <option value="turista_niño">No Residente (Niño) - $5.000</option>
+                                        <option value="local">Residente - $3.000</option>
                                     </select>
                                 </div>
 
@@ -119,7 +119,7 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                 <div class="col-12 col-sm-4">
                                     <div class="text-center p-3" style="background-color: var(--brand-50); border-radius: 12px;">
                                         <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 4px;">
-                                            Turista Adulto
+                                            No Residente Adulto
                                         </div>
                                         <div style="font-size: 24px; font-weight: 700; color: var(--brand-600);">
                                             $8.000
@@ -129,7 +129,7 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                 <div class="col-12 col-sm-4">
                                     <div class="text-center p-3" style="background-color: var(--success-50); border-radius: 12px;">
                                         <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 4px;">
-                                            Turista Niño
+                                            No Residente Niño
                                         </div>
                                         <div style="font-size: 24px; font-weight: 700; color: var(--success-600);">
                                             $5.000
@@ -139,7 +139,7 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                 <div class="col-12 col-sm-4">
                                     <div class="text-center p-3" style="background-color: var(--warning-50); border-radius: 12px;">
                                         <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 4px;">
-                                            Local
+                                            Residente
                                         </div>
                                         <div style="font-size: 24px; font-weight: 700; color: var(--warning-600);">
                                             $3.000

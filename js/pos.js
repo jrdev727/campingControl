@@ -8,9 +8,9 @@ const precios = {
 };
 
 const nombres = {
-    'turista_adulto': 'Turista (Adulto)',
-    'turista_niño': 'Turista (Niño)',
-    'local': 'Local'
+    'turista_adulto': 'No Residente (Adulto)',
+    'turista_niño': 'No Residente (Niño)',
+    'local': 'Residente'
 };
 
 // Agregar al carrito
