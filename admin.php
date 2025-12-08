@@ -42,7 +42,7 @@ $esAdmin = true;
             <!-- Métricas principales -->
             <div class="row g-4 mb-4">
                 <!-- Entradas Hoy -->
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-12 col-md-6">
                     <div class="metric-card">
                         <div class="metric-icon-wrapper">
                             <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@ $esAdmin = true;
                 </div>
 
                 <!-- Entradas del Mes -->
-                <div class="col-12 col-sm-6 col-xl-3">
+                <div class="col-12 col-md-6">
                     <div class="metric-card">
                         <div class="metric-icon-wrapper">
                             <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,38 +73,6 @@ $esAdmin = true;
                             </svg>
                             0%
                         </span>
-                    </div>
-                </div>
-
-                <!-- Quinchos Disponibles -->
-                <div class="col-12 col-sm-6 col-xl-3">
-                    <div class="metric-card">
-                        <div class="metric-icon-wrapper">
-                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                        </div>
-                        <div class="metric-label">Quinchos Disponibles</div>
-                        <div class="metric-value" id="quinchos-disponibles">0</div>
-                        <div class="text-gray-500" style="font-size: 14px;">
-                            Espacios libres
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Reposeras Disponibles -->
-                <div class="col-12 col-sm-6 col-xl-3">
-                    <div class="metric-card">
-                        <div class="metric-icon-wrapper">
-                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <div class="metric-label">Reposeras Disponibles</div>
-                        <div class="metric-value" id="reposeras-disponibles">0</div>
-                        <div class="text-gray-500" style="font-size: 14px;">
-                            Unidades libres
-                        </div>
                     </div>
                 </div>
             </div>
@@ -225,10 +193,6 @@ $esAdmin = true;
                     ${Math.abs(porcentaje).toFixed(1)}%
                 `;
             }
-
-            // Actualizar inventario
-            document.getElementById('quinchos-disponibles').textContent = data.inventario.Quincho || 0;
-            document.getElementById('reposeras-disponibles').textContent = data.inventario.Reposera || 0;
 
             // Actualizar gráfico de ingresos
             actualizarGraficoIngresos(data.ingresos_semana);

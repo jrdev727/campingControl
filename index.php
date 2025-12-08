@@ -9,7 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 // Variables para el layout
 $paginaActual = 'control';
-$tituloPagina = 'Control de Acceso';
+$tituloPagina = 'Punto de Venta';
 $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
 ?>
 <!DOCTYPE html>
