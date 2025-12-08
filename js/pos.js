@@ -207,21 +207,21 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
         for (let i = 0; i < item.cantidad; i++) {
             ticketNum++;
             contenido += `
-                <div style="text-align: center; margin-bottom: 20px; page-break-after: always;">
-                    <div style="font-size: 11px; margin-bottom: 5px;">Ticket de Ingreso</div>
-                    <div style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">CAMPING SONRISAS COMPARTIDAS</div>
-                    <div style="border-top: 1px dashed #000; margin: 8px 0;"></div>
+                <div style="text-align: center; margin-bottom: 30px; page-break-after: always;">
+                    <div style="margin-bottom: 5px;">Ticket de Ingreso</div>
+                    <div style="font-weight: bold; margin-bottom: 8px;">CAMPING SONRISAS COMPARTIDAS</div>
+                    <div style="margin: 10px 0;">----------------------------</div>
 
-                    <div style="text-align: left; font-size: 11px; line-height: 1.6;">
+                    <div style="text-align: left;">
                         <div><strong>Ticket #${ticketNum}</strong></div>
                         <div><strong>Tipo:</strong> ${nombresTipos[item.tipo] || item.nombre}</div>
-                        <div style="margin: 8px 0;"></div>
+                        <div style="height: 10px;"></div>
                         <div><strong>Fecha:</strong> ${fechaFormateada}</div>
                         <div><strong>Hora:</strong> ${horaFormateada}</div>
                         <div><strong>Precio:</strong> $${item.precio.toLocaleString('es-AR')}</div>
                     </div>
 
-                    <div style="border-top: 1px dashed #000; margin: 8px 0;"></div>
+                    <div style="margin: 10px 0;">----------------------------</div>
                 </div>
             `;
         }
