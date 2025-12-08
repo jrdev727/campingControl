@@ -181,10 +181,12 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
     // Preparar contenido del ticket
     let contenido = '';
     let total = 0;
+    let cantidadTotal = 0;
 
     carrito.forEach(item => {
         const subtotal = item.precio * item.cantidad;
         total += subtotal;
+        cantidadTotal += item.cantidad;
 
         contenido += `
             <div style="margin-bottom: 10px;">
@@ -197,13 +199,32 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
         `;
     });
 
+    // Agregar resumen detallado
+    contenido += `
+        <div style="border-top: 1px solid #000; margin-top: 10px; padding-top: 10px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>Total Entradas:</span>
+                <span>${cantidadTotal}</span>
+            </div>
+        </div>
+    `;
+
     document.getElementById('ticket-contenido').innerHTML = contenido;
     document.getElementById('ticket-total').textContent = '$' + total.toLocaleString('es-AR');
 
     // Fecha y hora actual
     const ahora = new Date();
-    document.getElementById('ticket-fecha').textContent =
-        ahora.toLocaleDateString('es-AR') + ' ' + ahora.toLocaleTimeString('es-AR');
+    const fechaFormateada = ahora.toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+    const horaFormateada = ahora.toLocaleTimeString('es-AR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    document.getElementById('ticket-fecha').textContent = `Fecha: ${fechaFormateada} - Hora: ${horaFormateada}`;
 
     // Imprimir
     window.print();
