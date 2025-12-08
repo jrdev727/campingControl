@@ -116,14 +116,13 @@ $esAdmin = true;
                                         <th>ID</th>
                                         <th>DNI</th>
                                         <th>Tipo</th>
-                                        <th>Edad</th>
                                         <th>Precio</th>
                                         <th>Fecha/Hora</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabla-ultimas-entradas">
                                     <tr>
-                                        <td colspan="6" class="text-center text-gray-500">Cargando datos...</td>
+                                        <td colspan="5" class="text-center text-gray-500">Cargando datos...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -293,7 +292,7 @@ $esAdmin = true;
             const tbody = document.getElementById('tabla-ultimas-entradas');
 
             if (entradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500">No hay entradas registradas</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500">No hay entradas registradas</td></tr>';
                 return;
             }
 
@@ -302,7 +301,6 @@ $esAdmin = true;
                     <td>#${entrada.id}</td>
                     <td>${entrada.dni}</td>
                     <td><span class="badge badge-primary">${entrada.tipo}</span></td>
-                    <td>${entrada.edad} años</td>
                     <td>$${formatearPrecio(entrada.precio)}</td>
                     <td>${entrada.fecha}</td>
                 </tr>

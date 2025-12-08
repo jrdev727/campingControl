@@ -88,9 +88,10 @@ try {
     $stats['inventario'] = $inventario;
 
     // 6. Últimas 10 entradas
-    $sql_ultimas = "SELECT id, dni_cliente, tipo_entrada, precio, edad,
+    $sql_ultimas = "SELECT id, dni_cliente, tipo_entrada, precio,
                     DATE_FORMAT(fecha_hora, '%d/%m/%Y %H:%i') as fecha_formateada
                     FROM entradas
+                    WHERE estado = 'activo'
                     ORDER BY fecha_hora DESC
                     LIMIT 10";
     $resultado_ultimas = $conn->query($sql_ultimas);
@@ -98,10 +99,9 @@ try {
     while ($row = $resultado_ultimas->fetch_assoc()) {
         $ultimas_entradas[] = [
             'id' => (int)$row['id'],
-            'dni' => $row['dni_cliente'],
+            'dni' => $row['dni_cliente'] ?: 'N/A',
             'tipo' => $row['tipo_entrada'],
             'precio' => (float)$row['precio'],
-            'edad' => (int)$row['edad'],
             'fecha' => $row['fecha_formateada']
         ];
     }

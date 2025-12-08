@@ -9,7 +9,6 @@ require_once 'conexion.php';
 // Obtener datos del formulario
 $dni = $_POST['dni'] ?? '';
 $tipo_entrada = $_POST['tipo_entrada'] ?? '';
-$edad = $_POST['edad'] ?? 0;
 
 // Definir precios según tipo de entrada
 $precios = [
@@ -26,12 +25,16 @@ if (!isset($precios[$tipo_entrada])) {
 
 $precio = $precios[$tipo_entrada];
 
+// Obtener usuario_id de la sesión
+session_start();
+$usuario_id = $_SESSION['usuario_id'] ?? null;
+
 // Insertar datos en la tabla de entradas usando prepared statement
-$sql = "INSERT INTO entradas (fecha_hora, tipo_entrada, precio, dni_cliente, edad)
-        VALUES (NOW(), ?, ?, ?, ?)";
+$sql = "INSERT INTO entradas (tipo_entrada, precio, dni_cliente, usuario_id, estado)
+        VALUES (?, ?, ?, ?, 'activo')";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sdsi", $tipo_entrada, $precio, $dni, $edad);
+$stmt->bind_param("sdsi", $tipo_entrada, $precio, $dni, $usuario_id);
 
 if ($stmt->execute()) {
     echo json_encode(["success" => true, "message" => "Ingreso registrado correctamente."]);
