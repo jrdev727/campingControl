@@ -20,6 +20,7 @@ if ($resultado->num_rows > 0) {
     if (password_verify($contraseña, $usuario_db['contraseña'])) {
         // Iniciar sesión
         $_SESSION['usuario_id'] = $usuario_db['id'];
+        $_SESSION['usuario'] = $usuario_db['usuario'];
         $_SESSION['rol'] = $usuario_db['rol'];
 
         // Redirigir según el rol
