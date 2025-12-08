@@ -177,53 +177,94 @@ async function generarReporteFinanciero() {
     }
 }
 
-// Exportar a PDF (simplificado)
-function exportarPDF() {
-    if (!datosActuales) {
-        alert('No hay datos para exportar');
-        return;
-    }
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    // Título
-    doc.setFontSize(18);
-    doc.text('Reporte de Entradas', 20, 20);
-
-    // Fecha
-    doc.setFontSize(11);
+// Exportar a PDF con formato de tabla
+async function exportarPDF() {
     const fechaDesde = document.getElementById('fecha-desde-entradas').value;
     const fechaHasta = document.getElementById('fecha-hasta-entradas').value;
-    doc.text(`Período: ${fechaDesde} al ${fechaHasta}`, 20, 30);
 
-    // Resumen
-    doc.setFontSize(14);
-    doc.text('Resumen', 20, 45);
-    doc.setFontSize(11);
-    doc.text(`Total de Entradas: ${datosActuales.total_entradas}`, 20, 55);
-    doc.text(`Ingresos Totales: $${formatearPrecio(datosActuales.ingresos_totales)}`, 20, 65);
+    try {
+        // Obtener datos detallados por fecha
+        const params = new URLSearchParams({
+            fecha_desde: fechaDesde,
+            fecha_hasta: fechaHasta
+        });
 
-    // Detalle por tipo
-    doc.setFontSize(14);
-    doc.text('Detalle por Tipo', 20, 80);
-    doc.setFontSize(11);
+        const response = await fetch(`php/reporte_pdf.php?${params}`);
+        const result = await response.json();
 
-    let y = 90;
-    const nombresTipos = {
-        'turista_adulto': 'No Residente Adulto',
-        'turista_niño': 'No Residente Niño',
-        'local': 'Residente'
-    };
+        if (!result.success) {
+            alert('Error al generar el reporte');
+            return;
+        }
 
-    for (const [tipo, datos] of Object.entries(datosActuales.por_tipo)) {
-        const nombre = nombresTipos[tipo] || tipo;
-        doc.text(`${nombre}: ${datos.cantidad} x $${formatearPrecio(datos.precio_unitario)} = $${formatearPrecio(datos.total)}`, 20, y);
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Título
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Reporte Financiero - Camping Sonrisas', 105, 20, { align: 'center' });
+
+        // Resumen superior
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        let y = 35;
+
+        doc.text(`Ingresos por Entradas: $${formatearPrecio(result.data.totales.ingresos_entradas)}`, 20, y);
         y += 10;
-    }
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Total: $${formatearPrecio(result.data.totales.total)}`, 20, y);
 
-    // Guardar
-    doc.save(`reporte-entradas-${fechaDesde}-${fechaHasta}.pdf`);
+        y += 15;
+
+        // Tabla - Encabezado
+        doc.setFillColor(41, 128, 185); // Azul
+        doc.rect(20, y, 170, 10, 'F');
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.text('Fecha', 30, y + 7);
+        doc.text('Entradas', 90, y + 7);
+        doc.text('Total', 150, y + 7);
+
+        y += 10;
+
+        // Tabla - Filas
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+
+        let isAlternate = false;
+        result.data.por_fecha.forEach((fila) => {
+            // Alternar color de fondo
+            if (isAlternate) {
+                doc.setFillColor(240, 240, 240);
+                doc.rect(20, y, 170, 8, 'F');
+            }
+
+            doc.text(fila.fecha, 30, y + 6);
+            doc.text(`$${formatearPrecio(fila.ingresos_entradas)}`, 90, y + 6);
+            doc.text(`$${formatearPrecio(fila.total)}`, 150, y + 6);
+
+            y += 8;
+            isAlternate = !isAlternate;
+
+            // Nueva página si es necesario
+            if (y > 270) {
+                doc.addPage();
+                y = 20;
+                isAlternate = false;
+            }
+        });
+
+        // Guardar
+        doc.save(`reporte-financiero-${fechaDesde}-${fechaHasta}.pdf`);
+
+    } catch (error) {
+        console.error('Error al exportar PDF:', error);
+        alert('Error al generar el PDF');
+    }
 }
 
 // Formatear precio
