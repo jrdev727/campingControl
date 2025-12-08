@@ -1,6 +1,19 @@
 <?php
+// Disable HTML error output
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
+// Set JSON header before any output
+header('Content-Type: application/json');
+
 session_start();
 require_once 'conexion.php';
+
+// Validate POST data
+if (!isset($_POST['usuario']) || !isset($_POST['contraseña'])) {
+    echo json_encode(["success" => false, "message" => "Datos incompletos."]);
+    exit();
+}
 
 // Obtener datos del formulario
 $usuario = $_POST['usuario'];
@@ -9,6 +22,13 @@ $contraseña = $_POST['contraseña'];
 // Consultar usuario en la base de datos
 $sql = "SELECT * FROM usuarios WHERE usuario = ?";
 $stmt = $conn->prepare($sql);
+
+if (!$stmt) {
+    echo json_encode(["success" => false, "message" => "Error en la base de datos."]);
+    $conn->close();
+    exit();
+}
+
 $stmt->bind_param("s", $usuario);
 $stmt->execute();
 $resultado = $stmt->get_result();
@@ -36,5 +56,6 @@ if ($resultado->num_rows > 0) {
     echo json_encode(["success" => false, "message" => "Usuario no encontrado."]);
 }
 
+$stmt->close();
 $conn->close();
 ?>
