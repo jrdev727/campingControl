@@ -125,18 +125,20 @@ try {
 
     // 8. Estadísticas financieras adicionales
     // Promedio de ticket (precio promedio por entrada)
-    $sql_promedio = "SELECT AVG(precio) as promedio FROM entradas WHERE DATE(fecha_hora) = CURDATE()";
+    $sql_promedio = "SELECT COALESCE(AVG(precio), 0) as promedio FROM entradas WHERE DATE(fecha_hora) = CURDATE()";
     $resultado_promedio = $conn->query($sql_promedio);
     $datos_promedio = $resultado_promedio->fetch_assoc();
-    $stats['promedio_ticket'] = round((float)$datos_promedio['promedio'], 2);
+    $stats['promedio_ticket'] = round((float)($datos_promedio['promedio'] ?? 0), 2);
 
     // Ingresos por tipo de entrada (hoy)
     $sql_ingresos_tipo = "SELECT tipo_entrada, SUM(precio) as total FROM entradas
                           WHERE DATE(fecha_hora) = CURDATE() GROUP BY tipo_entrada";
     $resultado_ingresos_tipo = $conn->query($sql_ingresos_tipo);
     $ingresos_por_tipo = [];
-    while ($row = $resultado_ingresos_tipo->fetch_assoc()) {
-        $ingresos_por_tipo[$row['tipo_entrada']] = (float)$row['total'];
+    if ($resultado_ingresos_tipo) {
+        while ($row = $resultado_ingresos_tipo->fetch_assoc()) {
+            $ingresos_por_tipo[$row['tipo_entrada']] = (float)$row['total'];
+        }
     }
     $stats['ingresos_por_tipo'] = $ingresos_por_tipo;
 
@@ -146,8 +148,8 @@ try {
     $resultado_ayer = $conn->query($sql_ayer);
     $datos_ayer = $resultado_ayer->fetch_assoc();
     $stats['ayer'] = [
-        'total' => (int)$datos_ayer['total'],
-        'ingresos' => (float)$datos_ayer['ingresos']
+        'total' => (int)($datos_ayer['total'] ?? 0),
+        'ingresos' => (float)($datos_ayer['ingresos'] ?? 0)
     ];
 
     // Enviar respuesta exitosa
