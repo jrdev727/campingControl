@@ -1,5 +1,9 @@
 <?php
+// Disable HTML error output and set JSON header
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 header('Content-Type: application/json');
+
 require_once 'conexion.php';
 
 // Obtener datos del formulario

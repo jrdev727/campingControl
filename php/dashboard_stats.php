@@ -1,4 +1,9 @@
 <?php
+// Disable HTML error output and set JSON header first
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+header('Content-Type: application/json');
+
 session_start();
 require_once 'conexion.php';
 
@@ -119,7 +124,6 @@ try {
     $stats['ingresos_semana'] = $ingresos_semana;
 
     // Enviar respuesta exitosa
-    header('Content-Type: application/json');
     echo json_encode([
         'success' => true,
         'data' => $stats
