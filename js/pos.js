@@ -180,51 +180,49 @@ document.getElementById('btn-registrar')?.addEventListener('click', async functi
 document.getElementById('btn-imprimir')?.addEventListener('click', function() {
     // Preparar contenido del ticket
     let contenido = '';
-    let total = 0;
-    let cantidadTotal = 0;
-
-    carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
-        cantidadTotal += item.cantidad;
-
-        contenido += `
-            <div style="margin-bottom: 10px;">
-                <div style="font-weight: bold;">${item.nombre}</div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>${item.cantidad} x $${item.precio.toLocaleString('es-AR')}</span>
-                    <span>$${subtotal.toLocaleString('es-AR')}</span>
-                </div>
-            </div>
-        `;
-    });
-
-    // Agregar resumen detallado
-    contenido += `
-        <div style="border-top: 1px solid #000; margin-top: 10px; padding-top: 10px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span>Total Entradas:</span>
-                <span>${cantidadTotal}</span>
-            </div>
-        </div>
-    `;
-
-    document.getElementById('ticket-contenido').innerHTML = contenido;
-    document.getElementById('ticket-total').textContent = '$' + total.toLocaleString('es-AR');
+    let ticketNum = Math.floor(Math.random() * 10000); // Número de ticket aleatorio
 
     // Fecha y hora actual
     const ahora = new Date();
-    const fechaFormateada = ahora.toLocaleDateString('es-AR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-    const horaFormateada = ahora.toLocaleTimeString('es-AR', {
-        hour: '2-digit',
-        minute: '2-digit'
+    const dia = String(ahora.getDate()).padStart(2, '0');
+    const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+    const anio = ahora.getFullYear();
+    const hora = ahora.getHours();
+    const minutos = String(ahora.getMinutes()).padStart(2, '0');
+    const periodo = hora >= 12 ? 'p. m.' : 'a. m.';
+    const hora12 = hora % 12 || 12;
+
+    const fechaFormateada = `${dia}-${mes}-${anio}`;
+    const horaFormateada = `${String(hora12).padStart(2, '0')}:${minutos} ${periodo}`;
+
+    // Mapeo de nombres de tipos
+    const nombresTipos = {
+        'turista_adulto': 'No Residente (Adulto)',
+        'turista_niño': 'No Residente (Niño)',
+        'local': 'Residente'
+    };
+
+    // Generar un ticket por cada item y cantidad
+    carrito.forEach(item => {
+        for (let i = 0; i < item.cantidad; i++) {
+            ticketNum++;
+            contenido += `
+                <div style="border-bottom: 1px dashed #666; padding: 15px 0; margin-bottom: 15px;">
+                    <div style="font-weight: bold; font-size: 13px; margin-bottom: 10px; color: #fff;">
+                        Ticket #${ticketNum}
+                    </div>
+                    <div style="font-size: 12px; line-height: 1.8; color: #ddd;">
+                        <div><strong style="color: #fff;">Tipo:</strong> ${nombresTipos[item.tipo] || item.nombre}</div>
+                        <div style="margin-top: 8px;"><strong style="color: #fff;">Fecha:</strong> ${fechaFormateada}</div>
+                        <div><strong style="color: #fff;">Hora:</strong> ${horaFormateada}</div>
+                        <div style="margin-top: 8px;"><strong style="color: #fff;">Precio:</strong> $${item.precio.toLocaleString('es-AR')}</div>
+                    </div>
+                </div>
+            `;
+        }
     });
 
-    document.getElementById('ticket-fecha').textContent = `Fecha: ${fechaFormateada} - Hora: ${horaFormateada}`;
+    document.getElementById('ticket-contenido').innerHTML = contenido;
 
     // Imprimir
     window.print();
