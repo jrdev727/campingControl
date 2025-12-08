@@ -1,10 +1,11 @@
 <?php
+header('Content-Type: application/json');
 require_once 'conexion.php';
 
 // Obtener datos del formulario
-$dni = $_POST['dni'];
-$tipo_entrada = $_POST['tipo_entrada'];
-$edad = $_POST['edad'];
+$dni = $_POST['dni'] ?? '';
+$tipo_entrada = $_POST['tipo_entrada'] ?? '';
+$edad = $_POST['edad'] ?? 0;
 
 // Definir precios según tipo de entrada
 $precios = [
@@ -13,17 +14,27 @@ $precios = [
     'local' => 3000
 ];
 
+// Validar que el tipo de entrada existe
+if (!isset($precios[$tipo_entrada])) {
+    echo json_encode(["success" => false, "message" => "Tipo de entrada inválido."]);
+    exit();
+}
+
 $precio = $precios[$tipo_entrada];
 
-// Insertar datos en la tabla de entradas
+// Insertar datos en la tabla de entradas usando prepared statement
 $sql = "INSERT INTO entradas (fecha_hora, tipo_entrada, precio, dni_cliente, edad)
-        VALUES (NOW(), '$tipo_entrada', $precio, '$dni', $edad)";
+        VALUES (NOW(), ?, ?, ?, ?)";
 
-if ($conn->query($sql) === TRUE) {
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sdsi", $tipo_entrada, $precio, $dni, $edad);
+
+if ($stmt->execute()) {
     echo json_encode(["success" => true, "message" => "Ingreso registrado correctamente."]);
 } else {
     echo json_encode(["success" => false, "message" => "Error al registrar el ingreso."]);
 }
 
+$stmt->close();
 $conn->close();
 ?>

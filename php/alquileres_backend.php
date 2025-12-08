@@ -1,33 +1,38 @@
 <?php
+header('Content-Type: application/json');
 require_once 'conexion.php';
 
 // Obtener datos del formulario
-$tipo = $_POST['tipo'];
+$tipo = $_POST['tipo'] ?? '';
 
 if ($tipo === 'quincho') {
     // Datos específicos para reservar un quincho
-    $fecha = $_POST['fecha'];
-    $hora = $_POST['hora'];
-    $personas = $_POST['personas'];
+    $fecha = $_POST['fecha'] ?? '';
+    $hora = $_POST['hora'] ?? '';
+    $personas = $_POST['personas'] ?? 0;
 
     // Verificar disponibilidad de quinchos
-    $sql = "SELECT cantidad_disponible FROM inventario WHERE tipo_recurso = 'quincho'";
+    $sql = "SELECT cantidad_disponible FROM inventario WHERE tipo_recurso = 'Quincho'";
     $resultado = $conn->query($sql);
 
-    if ($resultado->num_rows > 0) {
+    if ($resultado && $resultado->num_rows > 0) {
         $row = $resultado->fetch_assoc();
         $disponibles = $row['cantidad_disponible'];
 
         if ($disponibles > 0) {
             // Actualizar inventario (reducir cantidad disponible)
             $nuevos_disponibles = $disponibles - 1;
-            $update_sql = "UPDATE inventario SET cantidad_disponible = $nuevos_disponibles WHERE tipo_recurso = 'quincho'";
+            $update_sql = "UPDATE inventario SET cantidad_disponible = ? WHERE tipo_recurso = 'Quincho'";
 
-            if ($conn->query($update_sql) === TRUE) {
+            $stmt = $conn->prepare($update_sql);
+            $stmt->bind_param("i", $nuevos_disponibles);
+
+            if ($stmt->execute()) {
                 echo json_encode(["success" => true, "message" => "Quincho reservado correctamente."]);
             } else {
                 echo json_encode(["success" => false, "message" => "Error al actualizar el inventario."]);
             }
+            $stmt->close();
         } else {
             echo json_encode(["success" => false, "message" => "No hay quinchos disponibles."]);
         }
@@ -36,29 +41,35 @@ if ($tipo === 'quincho') {
     }
 } elseif ($tipo === 'reposera') {
     // Datos específicos para alquilar una reposera
-    $sql = "SELECT cantidad_disponible FROM inventario WHERE tipo_recurso = 'reposera'";
+    $sql = "SELECT cantidad_disponible FROM inventario WHERE tipo_recurso = 'Reposera'";
     $resultado = $conn->query($sql);
 
-    if ($resultado->num_rows > 0) {
+    if ($resultado && $resultado->num_rows > 0) {
         $row = $resultado->fetch_assoc();
         $disponibles = $row['cantidad_disponible'];
 
         if ($disponibles > 0) {
             // Actualizar inventario (reducir cantidad disponible)
             $nuevos_disponibles = $disponibles - 1;
-            $update_sql = "UPDATE inventario SET cantidad_disponible = $nuevos_disponibles WHERE tipo_recurso = 'reposera'";
+            $update_sql = "UPDATE inventario SET cantidad_disponible = ? WHERE tipo_recurso = 'Reposera'";
 
-            if ($conn->query($update_sql) === TRUE) {
+            $stmt = $conn->prepare($update_sql);
+            $stmt->bind_param("i", $nuevos_disponibles);
+
+            if ($stmt->execute()) {
                 echo json_encode(["success" => true, "message" => "Reposera alquilada correctamente."]);
             } else {
                 echo json_encode(["success" => false, "message" => "Error al actualizar el inventario."]);
             }
+            $stmt->close();
         } else {
             echo json_encode(["success" => false, "message" => "No hay reposeras disponibles."]);
         }
     } else {
         echo json_encode(["success" => false, "message" => "Error al verificar la disponibilidad de reposeras."]);
     }
+} else {
+    echo json_encode(["success" => false, "message" => "Tipo de alquiler inválido."]);
 }
 
 $conn->close();
