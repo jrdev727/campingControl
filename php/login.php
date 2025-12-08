@@ -36,8 +36,19 @@ $resultado = $stmt->get_result();
 if ($resultado->num_rows > 0) {
     $usuario_db = $resultado->fetch_assoc();
 
-    // Verificar contraseña
+    // Verificar contraseña (soporta tanto hashed como texto plano)
+    $password_valida = false;
+
+    // Intentar primero con password_verify (para contraseñas hasheadas)
     if (password_verify($contraseña, $usuario_db['contraseña'])) {
+        $password_valida = true;
+    }
+    // Si falla, comparar directamente (para contraseñas en texto plano)
+    elseif ($contraseña === $usuario_db['contraseña']) {
+        $password_valida = true;
+    }
+
+    if ($password_valida) {
         // Iniciar sesión
         $_SESSION['usuario_id'] = $usuario_db['id'];
         $_SESSION['usuario'] = $usuario_db['usuario'];
