@@ -207,16 +207,21 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
         for (let i = 0; i < item.cantidad; i++) {
             ticketNum++;
             contenido += `
-                <div style="border-bottom: 1px dashed #666; padding: 15px 0; margin-bottom: 15px;">
-                    <div style="font-weight: bold; font-size: 13px; margin-bottom: 10px; color: #fff;">
-                        Ticket #${ticketNum}
+                <div style="text-align: center; margin-bottom: 20px; page-break-after: always;">
+                    <div style="font-size: 11px; margin-bottom: 5px;">Ticket de Ingreso</div>
+                    <div style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">CAMPING SONRISAS COMPARTIDAS</div>
+                    <div style="border-top: 1px dashed #000; margin: 8px 0;"></div>
+
+                    <div style="text-align: left; font-size: 11px; line-height: 1.6;">
+                        <div><strong>Ticket #${ticketNum}</strong></div>
+                        <div><strong>Tipo:</strong> ${nombresTipos[item.tipo] || item.nombre}</div>
+                        <div style="margin: 8px 0;"></div>
+                        <div><strong>Fecha:</strong> ${fechaFormateada}</div>
+                        <div><strong>Hora:</strong> ${horaFormateada}</div>
+                        <div><strong>Precio:</strong> $${item.precio.toLocaleString('es-AR')}</div>
                     </div>
-                    <div style="font-size: 12px; line-height: 1.8; color: #ddd;">
-                        <div><strong style="color: #fff;">Tipo:</strong> ${nombresTipos[item.tipo] || item.nombre}</div>
-                        <div style="margin-top: 8px;"><strong style="color: #fff;">Fecha:</strong> ${fechaFormateada}</div>
-                        <div><strong style="color: #fff;">Hora:</strong> ${horaFormateada}</div>
-                        <div style="margin-top: 8px;"><strong style="color: #fff;">Precio:</strong> $${item.precio.toLocaleString('es-AR')}</div>
-                    </div>
+
+                    <div style="border-top: 1px dashed #000; margin: 8px 0;"></div>
                 </div>
             `;
         }

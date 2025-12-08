@@ -214,24 +214,9 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
 
     <!-- Ticket oculto para impresión -->
     <div id="ticket-print" style="display: none;">
-        <div style="font-family: Arial, sans-serif; width: 80mm; padding: 10mm; background: #000; color: #fff;">
-            <!-- Header -->
-            <div style="text-align: center; padding-bottom: 15px; border-bottom: 1px dashed #666;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="#3B82F6" style="margin-bottom: 10px;">
-                    <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>
-                </svg>
-                <h2 style="margin: 0; font-size: 16px; color: #3B82F6; text-transform: uppercase; letter-spacing: 1px;">
-                    Camping Sonrisas Compartidas
-                </h2>
-            </div>
-
+        <div style="font-family: 'Courier New', monospace; width: 80mm; padding: 5mm; background: #fff; color: #000;">
             <!-- Tickets -->
-            <div id="ticket-contenido" style="margin-top: 15px;"></div>
-
-            <!-- Footer -->
-            <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #666; font-size: 10px; color: #999;">
-                ¡Gracias por su visita!
-            </div>
+            <div id="ticket-contenido"></div>
         </div>
     </div>
 
