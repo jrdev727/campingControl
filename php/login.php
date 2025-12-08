@@ -40,11 +40,11 @@ if ($resultado->num_rows > 0) {
     $password_valida = false;
 
     // Intentar primero con password_verify (para contraseñas hasheadas)
-    if (password_verify($contraseña, $usuario_db['contraseña'])) {
+    if (password_verify($contraseña, $usuario_db['password'])) {
         $password_valida = true;
     }
     // Si falla, comparar directamente (para contraseñas en texto plano)
-    elseif ($contraseña === $usuario_db['contraseña']) {
+    elseif ($contraseña === $usuario_db['password']) {
         $password_valida = true;
     }
 
@@ -52,10 +52,10 @@ if ($resultado->num_rows > 0) {
         // Iniciar sesión
         $_SESSION['usuario_id'] = $usuario_db['id'];
         $_SESSION['usuario'] = $usuario_db['usuario'];
-        $_SESSION['rol'] = $usuario_db['rol'];
+        $_SESSION['rol'] = strtolower($usuario_db['nombre']); // Convertir a minúsculas para compatibilidad
 
         // Redirigir según el rol
-        if ($usuario_db['rol'] === 'administrador') {
+        if (strtolower($usuario_db['nombre']) === 'administrador') {
             echo json_encode(["success" => true, "redirect" => "admin.php"]);
         } else {
             echo json_encode(["success" => true, "redirect" => "index.php"]);
