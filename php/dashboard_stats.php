@@ -27,7 +27,8 @@ try {
     // 1. Total de entradas hoy
     $sql_hoy = "SELECT COUNT(*) as total, COALESCE(SUM(precio), 0) as ingresos
                 FROM entradas
-                WHERE DATE(fecha_hora) = CURDATE()";
+                WHERE DATE(fecha_hora) = CURDATE()
+                AND estado = 'activo'";
     $resultado_hoy = $conn->query($sql_hoy);
     $datos_hoy = $resultado_hoy->fetch_assoc();
     $stats['entradas_hoy'] = [
@@ -39,7 +40,8 @@ try {
     $sql_mes = "SELECT COUNT(*) as total, COALESCE(SUM(precio), 0) as ingresos
                 FROM entradas
                 WHERE MONTH(fecha_hora) = MONTH(CURDATE())
-                AND YEAR(fecha_hora) = YEAR(CURDATE())";
+                AND YEAR(fecha_hora) = YEAR(CURDATE())
+                AND estado = 'activo'";
     $resultado_mes = $conn->query($sql_mes);
     $datos_mes = $resultado_mes->fetch_assoc();
     $stats['entradas_mes'] = [
@@ -51,7 +53,8 @@ try {
     $sql_mes_anterior = "SELECT COUNT(*) as total
                          FROM entradas
                          WHERE MONTH(fecha_hora) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
-                         AND YEAR(fecha_hora) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))";
+                         AND YEAR(fecha_hora) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+                         AND estado = 'activo'";
     $resultado_mes_anterior = $conn->query($sql_mes_anterior);
     $datos_mes_anterior = $resultado_mes_anterior->fetch_assoc();
     $total_mes_anterior = (int)$datos_mes_anterior['total'];
@@ -68,6 +71,7 @@ try {
     $sql_tipos = "SELECT tipo_entrada, COUNT(*) as total
                   FROM entradas
                   WHERE DATE(fecha_hora) = CURDATE()
+                  AND estado = 'activo'
                   GROUP BY tipo_entrada";
     $resultado_tipos = $conn->query($sql_tipos);
     $tipos_entrada = [];
@@ -111,6 +115,7 @@ try {
     $sql_semana = "SELECT DATE(fecha_hora) as fecha, COALESCE(SUM(precio), 0) as ingresos
                    FROM entradas
                    WHERE fecha_hora >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+                   AND estado = 'activo'
                    GROUP BY DATE(fecha_hora)
                    ORDER BY fecha ASC";
     $resultado_semana = $conn->query($sql_semana);
@@ -125,14 +130,16 @@ try {
 
     // 8. Estadísticas financieras adicionales
     // Promedio de ticket (precio promedio por entrada)
-    $sql_promedio = "SELECT COALESCE(AVG(precio), 0) as promedio FROM entradas WHERE DATE(fecha_hora) = CURDATE()";
+    $sql_promedio = "SELECT COALESCE(AVG(precio), 0) as promedio FROM entradas
+                     WHERE DATE(fecha_hora) = CURDATE() AND estado = 'activo'";
     $resultado_promedio = $conn->query($sql_promedio);
     $datos_promedio = $resultado_promedio->fetch_assoc();
     $stats['promedio_ticket'] = round((float)($datos_promedio['promedio'] ?? 0), 2);
 
     // Ingresos por tipo de entrada (hoy)
     $sql_ingresos_tipo = "SELECT tipo_entrada, SUM(precio) as total FROM entradas
-                          WHERE DATE(fecha_hora) = CURDATE() GROUP BY tipo_entrada";
+                          WHERE DATE(fecha_hora) = CURDATE() AND estado = 'activo'
+                          GROUP BY tipo_entrada";
     $resultado_ingresos_tipo = $conn->query($sql_ingresos_tipo);
     $ingresos_por_tipo = [];
     if ($resultado_ingresos_tipo) {
@@ -144,7 +151,9 @@ try {
 
     // Comparación con ayer
     $sql_ayer = "SELECT COUNT(*) as total, COALESCE(SUM(precio), 0) as ingresos
-                 FROM entradas WHERE DATE(fecha_hora) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+                 FROM entradas
+                 WHERE DATE(fecha_hora) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                 AND estado = 'activo'";
     $resultado_ayer = $conn->query($sql_ayer);
     $datos_ayer = $resultado_ayer->fetch_assoc();
     $stats['ayer'] = [
