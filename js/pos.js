@@ -207,21 +207,17 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
         for (let i = 0; i < item.cantidad; i++) {
             ticketNum++;
             contenido += `
-                <div style="text-align: center; margin-bottom: 30px; page-break-after: always;">
-                    <div style="margin-bottom: 5px;">Ticket de Ingreso</div>
-                    <div style="font-weight: bold; margin-bottom: 8px;">CAMPING SONRISAS COMPARTIDAS</div>
-                    <div style="margin: 10px 0;">----------------------------</div>
-
-                    <div style="text-align: left;">
-                        <div><strong>Ticket #${ticketNum}</strong></div>
-                        <div><strong>Tipo:</strong> ${nombresTipos[item.tipo] || item.nombre}</div>
-                        <div style="height: 10px;"></div>
-                        <div><strong>Fecha:</strong> ${fechaFormateada}</div>
-                        <div><strong>Hora:</strong> ${horaFormateada}</div>
-                        <div><strong>Precio:</strong> $${item.precio.toLocaleString('es-AR')}</div>
-                    </div>
-
-                    <div style="margin: 10px 0;">----------------------------</div>
+                <div style="page-break-after: always; padding: 10px 0;">
+                    <div style="text-align: center; margin-bottom: 10px;">Ticket de Ingreso</div>
+                    <div style="text-align: center; font-weight: bold; margin-bottom: 10px;">CAMPING SONRISAS COMPARTIDAS</div>
+                    <div>----------------------------</div>
+                    <div><strong>Ticket #${ticketNum}</strong></div>
+                    <div><strong>Tipo:</strong> ${nombresTipos[item.tipo] || item.nombre}</div>
+                    <div>&nbsp;</div>
+                    <div><strong>Fecha:</strong> ${fechaFormateada}</div>
+                    <div><strong>Hora:</strong> ${horaFormateada}</div>
+                    <div><strong>Precio:</strong> $${item.precio.toLocaleString('es-AR')}</div>
+                    <div>----------------------------</div>
                 </div>
             `;
         }
