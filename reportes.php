@@ -217,12 +217,20 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                 <!-- Tab: Reporte Financiero -->
                 <div class="tab-pane fade" id="reporte-financiero">
                     <div class="filters-section">
-                        <h5 style="margin-bottom: 20px;">
-                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 8px; vertical-align: middle;">
-                                <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                            Período
-                        </h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 style="margin: 0;">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 8px; vertical-align: middle;">
+                                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                Período
+                            </h5>
+                            <button class="btn btn-light" onclick="exportarPDFFinanciero()" id="btn-exportar-financiero" style="display: none;">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
+                                    <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                                Exportar PDF
+                            </button>
+                        </div>
                         <div class="row g-3">
                             <div class="col-md-5">
                                 <label>Desde</label>

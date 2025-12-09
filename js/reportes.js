@@ -171,9 +171,115 @@ async function generarReporteFinanciero() {
             document.getElementById('ingresos-entradas-fin').textContent = formatearPrecio(result.data.ingresos_entradas);
             document.getElementById('ingresos-alquileres-fin').textContent = formatearPrecio(result.data.ingresos_alquileres);
             document.getElementById('ingresos-totales-fin').textContent = formatearPrecio(result.data.ingresos_totales);
+
+            // Mostrar botón de exportar PDF
+            document.getElementById('btn-exportar-financiero').style.display = 'inline-block';
         }
     } catch (error) {
         console.error('Error al generar reporte financiero:', error);
+    }
+}
+
+// Exportar reporte financiero a PDF
+async function exportarPDFFinanciero() {
+    const fechaDesde = document.getElementById('fecha-desde-financiero').value;
+    const fechaHasta = document.getElementById('fecha-hasta-financiero').value;
+
+    try {
+        const params = new URLSearchParams({
+            fecha_desde: fechaDesde,
+            fecha_hasta: fechaHasta
+        });
+
+        const response = await fetch(`php/reporte_financiero.php?${params}`);
+        const result = await response.json();
+
+        if (!result.success) {
+            alert('Error al generar el reporte');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Título
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Reporte Financiero', 105, 20, { align: 'center' });
+
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Camping Sonrisas Compartidas', 105, 30, { align: 'center' });
+
+        // Período
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Período: ${fechaDesde} - ${fechaHasta}`, 105, 40, { align: 'center' });
+
+        let y = 60;
+
+        // Cuadro de Ingresos por Entradas
+        doc.setFillColor(102, 126, 234);
+        doc.roundedRect(20, y, 170, 25, 3, 3, 'F');
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Ingresos por Entradas', 30, y + 10);
+
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`$${formatearPrecio(result.data.ingresos_entradas)}`, 30, y + 20);
+
+        y += 35;
+
+        // Cuadro de Ingresos por Alquileres
+        doc.setFillColor(240, 147, 251);
+        doc.roundedRect(20, y, 170, 25, 3, 3, 'F');
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Ingresos por Alquileres', 30, y + 10);
+
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`$${formatearPrecio(result.data.ingresos_alquileres)}`, 30, y + 20);
+
+        y += 35;
+
+        // Línea separadora
+        doc.setDrawColor(200, 200, 200);
+        doc.setLineWidth(0.5);
+        doc.line(20, y, 190, y);
+
+        y += 15;
+
+        // Cuadro de Total
+        doc.setFillColor(79, 172, 254);
+        doc.roundedRect(20, y, 170, 30, 3, 3, 'F');
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text('TOTAL DE INGRESOS', 30, y + 12);
+
+        doc.setFontSize(22);
+        doc.text(`$${formatearPrecio(result.data.ingresos_totales)}`, 30, y + 24);
+
+        // Pie de página
+        doc.setFontSize(9);
+        doc.setTextColor(150, 150, 150);
+        doc.setFont('helvetica', 'normal');
+        const fecha = new Date().toLocaleDateString('es-AR');
+        doc.text(`Generado el ${fecha}`, 105, 280, { align: 'center' });
+
+        // Guardar
+        doc.save(`reporte-financiero-${fechaDesde}-${fechaHasta}.pdf`);
+
+    } catch (error) {
+        console.error('Error al exportar PDF financiero:', error);
+        alert('Error al generar el PDF');
     }
 }
 
