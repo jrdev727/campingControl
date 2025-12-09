@@ -173,7 +173,7 @@ async function generarReporteFinanciero() {
             document.getElementById('ingresos-totales-fin').textContent = formatearPrecio(result.data.ingresos_totales);
 
             // Mostrar botón de exportar PDF
-            document.getElementById('btn-exportar-financiero').style.display = 'inline-block';
+            document.getElementById('btn-exportar-financiero').style.display = 'block';
         }
     } catch (error) {
         console.error('Error al generar reporte financiero:', error);
