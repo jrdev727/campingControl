@@ -168,15 +168,21 @@ async function generarReporteFinanciero() {
         const result = await response.json();
 
         if (result.success) {
-            document.getElementById('ingresos-entradas-fin').textContent = formatearPrecio(result.data.ingresos_entradas);
-            document.getElementById('ingresos-alquileres-fin').textContent = formatearPrecio(result.data.ingresos_alquileres);
+            document.getElementById('total-entradas-fin').textContent = result.data.total_entradas || 0;
             document.getElementById('ingresos-totales-fin').textContent = formatearPrecio(result.data.ingresos_totales);
 
             // Mostrar botón de exportar PDF
-            document.getElementById('btn-exportar-financiero').style.display = 'block';
+            const btnPDF = document.getElementById('btn-exportar-financiero');
+            if (btnPDF) {
+                btnPDF.style.display = 'block';
+                console.log('Botón PDF mostrado');
+            } else {
+                console.error('No se encontró el botón btn-exportar-financiero');
+            }
         }
     } catch (error) {
         console.error('Error al generar reporte financiero:', error);
+        alert('Error al generar el reporte: ' + error.message);
     }
 }
 
@@ -216,55 +222,34 @@ async function exportarPDFFinanciero() {
         doc.setTextColor(100, 100, 100);
         doc.text(`Período: ${fechaDesde} - ${fechaHasta}`, 105, 40, { align: 'center' });
 
-        let y = 60;
+        let y = 70;
 
-        // Cuadro de Ingresos por Entradas
+        // Cuadro de Total de Entradas
         doc.setFillColor(102, 126, 234);
-        doc.roundedRect(20, y, 170, 25, 3, 3, 'F');
+        doc.roundedRect(20, y, 170, 30, 3, 3, 'F');
 
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
-        doc.text('Ingresos por Entradas', 30, y + 10);
+        doc.text('Total de Entradas', 30, y + 12);
 
-        doc.setFontSize(18);
+        doc.setFontSize(22);
         doc.setFont('helvetica', 'bold');
-        doc.text(`$${formatearPrecio(result.data.ingresos_entradas)}`, 30, y + 20);
+        doc.text(`${result.data.total_entradas || 0}`, 30, y + 24);
 
-        y += 35;
+        y += 45;
 
-        // Cuadro de Ingresos por Alquileres
-        doc.setFillColor(240, 147, 251);
-        doc.roundedRect(20, y, 170, 25, 3, 3, 'F');
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        doc.text('Ingresos por Alquileres', 30, y + 10);
-
-        doc.setFontSize(18);
-        doc.setFont('helvetica', 'bold');
-        doc.text(`$${formatearPrecio(result.data.ingresos_alquileres)}`, 30, y + 20);
-
-        y += 35;
-
-        // Línea separadora
-        doc.setDrawColor(200, 200, 200);
-        doc.setLineWidth(0.5);
-        doc.line(20, y, 190, y);
-
-        y += 15;
-
-        // Cuadro de Total
+        // Cuadro de Ingresos Totales
         doc.setFillColor(79, 172, 254);
         doc.roundedRect(20, y, 170, 30, 3, 3, 'F');
 
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.text('TOTAL DE INGRESOS', 30, y + 12);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Ingresos Totales', 30, y + 12);
 
         doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
         doc.text(`$${formatearPrecio(result.data.ingresos_totales)}`, 30, y + 24);
 
         // Pie de página

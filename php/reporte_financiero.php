@@ -17,8 +17,8 @@ try {
     $fecha_desde = $_GET['fecha_desde'] ?? date('Y-m-01');
     $fecha_hasta = $_GET['fecha_hasta'] ?? date('Y-m-d');
 
-    // Ingresos por entradas
-    $sql_entradas = "SELECT COALESCE(SUM(precio), 0) as total
+    // Total de entradas y sus ingresos
+    $sql_entradas = "SELECT COUNT(*) as cantidad, COALESCE(SUM(precio), 0) as total
                      FROM entradas
                      WHERE DATE(fecha_hora) BETWEEN ? AND ?
                      AND estado = 'activo'";
@@ -28,20 +28,14 @@ try {
     $stmt->execute();
     $resultado = $stmt->get_result();
     $datos = $resultado->fetch_assoc();
-    $ingresos_entradas = (float)$datos['total'];
+    $total_entradas = (int)$datos['cantidad'];
+    $ingresos_totales = (float)$datos['total'];
     $stmt->close();
-
-    // Ingresos por alquileres (actualmente 0 ya que no hay alquileres)
-    $ingresos_alquileres = 0;
-
-    // Total
-    $ingresos_totales = $ingresos_entradas + $ingresos_alquileres;
 
     echo json_encode([
         'success' => true,
         'data' => [
-            'ingresos_entradas' => $ingresos_entradas,
-            'ingresos_alquileres' => $ingresos_alquileres,
+            'total_entradas' => $total_entradas,
             'ingresos_totales' => $ingresos_totales,
             'periodo' => [
                 'desde' => $fecha_desde,

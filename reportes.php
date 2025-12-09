@@ -94,14 +94,7 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                     <div class="metric-card">
                         <div class="metric-label">Ingresos Hoy</div>
                         <div class="metric-value" style="color: var(--success-600);">$<span id="ingresos-hoy-valor">0</span></div>
-                        <div class="text-gray-500" style="font-size: 14px;">Entradas + Alquileres</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="metric-card">
-                        <div class="metric-label">Alquileres Activos</div>
-                        <div class="metric-value" style="color: var(--warning-600);">0</div>
-                        <div class="text-gray-500" style="font-size: 14px;">En uso o reservados</div>
+                        <div class="text-gray-500" style="font-size: 14px;">Total del día</div>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -252,19 +245,13 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                     </div>
 
                     <div class="row g-4">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="metric-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                <div class="metric-label" style="color: white;">Ingresos por Entradas</div>
-                                <div class="metric-value" style="color: white;">$<span id="ingresos-entradas-fin">0</span></div>
+                                <div class="metric-label" style="color: white;">Total de Entradas</div>
+                                <div class="metric-value" style="color: white;"><span id="total-entradas-fin">0</span></div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="metric-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                                <div class="metric-label" style="color: white;">Ingresos por Alquileres</div>
-                                <div class="metric-value" style="color: white;">$<span id="ingresos-alquileres-fin">0</span></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
                                 <div class="metric-label" style="color: white;">Ingresos Totales</div>
                                 <div class="metric-value" style="color: white;">$<span id="ingresos-totales-fin">0</span></div>
