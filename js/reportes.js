@@ -398,5 +398,8 @@ async function exportarPDF() {
 
 // Formatear precio
 function formatearPrecio(precio) {
+    if (precio === undefined || precio === null || isNaN(precio)) {
+        return '0';
+    }
     return precio.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
