@@ -42,7 +42,7 @@ $esAdmin = true;
             <!-- Métricas principales -->
             <div class="row g-4 mb-4">
                 <!-- Entradas Hoy -->
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <div class="metric-card">
                         <div class="metric-icon-wrapper">
                             <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@ $esAdmin = true;
                 </div>
 
                 <!-- Entradas del Mes -->
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <div class="metric-card">
                         <div class="metric-icon-wrapper">
                             <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,6 +73,20 @@ $esAdmin = true;
                             </svg>
                             0%
                         </span>
+                    </div>
+                </div>
+
+                <!-- Comparación con Ayer -->
+                <div class="col-12 col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper">
+                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                        </div>
+                        <div class="metric-label">Entradas vs Ayer</div>
+                        <div class="metric-value" id="comparacion-ayer">0</div>
+                        <span class="metric-change" id="cambio-ayer">0%</span>
                     </div>
                 </div>
             </div>
@@ -102,64 +116,6 @@ $esAdmin = true;
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Estadísticas Adicionales -->
-            <div class="row g-4 mt-2">
-                <!-- Ticket Promedio -->
-                <div class="col-12 col-md-4">
-                    <div class="metric-card">
-                        <div class="metric-icon-wrapper">
-                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div class="metric-label">Ticket Promedio Hoy</div>
-                        <div class="metric-value">$<span id="ticket-promedio">0</span></div>
-                    </div>
-                </div>
-
-                <!-- Hora Pico -->
-                <div class="col-12 col-md-4">
-                    <div class="metric-card">
-                        <div class="metric-icon-wrapper">
-                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div class="metric-label">Hora Pico Hoy</div>
-                        <div class="metric-value" id="hora-pico">--</div>
-                    </div>
-                </div>
-
-                <!-- Comparación con Ayer -->
-                <div class="col-12 col-md-4">
-                    <div class="metric-card">
-                        <div class="metric-icon-wrapper">
-                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                            </svg>
-                        </div>
-                        <div class="metric-label">Entradas vs Ayer</div>
-                        <div class="metric-value" id="comparacion-ayer">0</div>
-                        <span class="metric-change" id="cambio-ayer">0%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gráfico de Entradas por Hora y Clima -->
-            <div class="row g-4 mt-2">
-                <!-- Gráfico de Entradas por Hora -->
-                <div class="col-12 col-xl-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Entradas por Hora - Hoy</h3>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="chartHoras" height="280"></canvas>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Widget del Clima -->
                 <div class="col-12 col-xl-4">
@@ -184,7 +140,6 @@ $esAdmin = true;
     <script>
         let chartIngresos = null;
         let chartTipos = null;
-        let chartHoras = null;
 
         // Cargar estadísticas al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
@@ -241,17 +196,6 @@ $esAdmin = true;
                 `;
             }
 
-            // Actualizar estadísticas adicionales
-            document.getElementById('ticket-promedio').textContent = formatearPrecio(data.promedio_ticket || 0);
-
-            // Hora pico
-            const horaPico = data.hora_pico;
-            if (horaPico !== null && horaPico !== undefined) {
-                document.getElementById('hora-pico').textContent = `${horaPico}:00`;
-            } else {
-                document.getElementById('hora-pico').textContent = '--';
-            }
-
             // Comparación con ayer
             const hoy = data.entradas_hoy.total;
             const ayer = data.ayer.total;
@@ -285,7 +229,6 @@ $esAdmin = true;
             // Actualizar gráficos
             actualizarGraficoIngresos(data.ingresos_semana);
             actualizarGraficoTipos(data.tipos_entrada);
-            actualizarGraficoHoras(data.entradas_por_hora);
         }
 
         function actualizarGraficoIngresos(datos) {
@@ -367,55 +310,6 @@ $esAdmin = true;
                     plugins: {
                         legend: {
                             position: 'bottom'
-                        }
-                    }
-                }
-            });
-        }
-
-        function actualizarGraficoHoras(datos) {
-            const ctx = document.getElementById('chartHoras').getContext('2d');
-
-            // Crear array de 24 horas con valores
-            const horas = Array.from({length: 24}, (_, i) => i);
-            const valores = horas.map(h => datos[h] || 0);
-            const labels = horas.map(h => `${h}:00`);
-
-            if (chartHoras) {
-                chartHoras.destroy();
-            }
-
-            chartHoras = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Entradas',
-                        data: valores,
-                        backgroundColor: '#465fff',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 45
-                            }
                         }
                     }
                 }
