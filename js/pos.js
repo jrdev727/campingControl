@@ -1,6 +1,11 @@
 // Sistema de Punto de Venta
 let carrito = [];
 
+// Cargar últimas entradas al iniciar
+document.addEventListener('DOMContentLoaded', function() {
+    cargarUltimasEntradas();
+});
+
 const precios = {
     'turista_adulto': 8000,
     'turista_niño': 5000,
@@ -158,6 +163,9 @@ document.getElementById('btn-registrar')?.addEventListener('click', async functi
 
             // Deshabilitar botón de registrar
             btn.style.display = 'none';
+
+            // Actualizar lista de últimas entradas
+            cargarUltimasEntradas();
         } else {
             mostrarAlerta('Hubo un error al registrar algunas entradas', 'danger');
         }
@@ -257,4 +265,103 @@ function mostrarAlerta(mensaje, tipo) {
     setTimeout(() => {
         alerta.classList.add('d-none');
     }, 5000);
+}
+
+// Cargar últimas entradas del día
+async function cargarUltimasEntradas() {
+    try {
+        const response = await fetch('php/obtener_entradas_hoy.php');
+        const result = await response.json();
+
+        const tbody = document.getElementById('tabla-ultimas-entradas');
+
+        if (!result.success || result.data.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-gray-500">
+                        No hay entradas registradas hoy
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        const nombresTipos = {
+            'turista_adulto': 'No Residente (Adulto)',
+            'turista_niño': 'No Residente (Niño)',
+            'local': 'Residente'
+        };
+
+        let html = '';
+        result.data.forEach(entrada => {
+            const nombreTipo = nombresTipos[entrada.tipo_entrada] || entrada.tipo_entrada;
+            const estadoBadge = entrada.estado === 'activo'
+                ? '<span class="badge badge-success">Activo</span>'
+                : '<span class="badge badge-danger">Anulado</span>';
+
+            const botonAnular = entrada.estado === 'activo'
+                ? `<button class="btn btn-sm btn-outline-danger" onclick="confirmarAnular(${entrada.id})">
+                       <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                       </svg>
+                       Anular
+                   </button>`
+                : '<span class="text-muted">—</span>';
+
+            html += `
+                <tr>
+                    <td>${entrada.hora}</td>
+                    <td>${nombreTipo}</td>
+                    <td>$${entrada.precio.toLocaleString('es-AR')}</td>
+                    <td>${estadoBadge}</td>
+                    <td>${botonAnular}</td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+
+    } catch (error) {
+        console.error('Error al cargar entradas:', error);
+        document.getElementById('tabla-ultimas-entradas').innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-danger">
+                    Error al cargar las entradas
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// Confirmar anulación de entrada
+function confirmarAnular(entradaId) {
+    if (confirm('¿Está seguro de anular esta entrada?\n\nEsta acción marcará la entrada como anulada y no se podrá revertir.')) {
+        anularEntrada(entradaId);
+    }
+}
+
+// Anular entrada
+async function anularEntrada(entradaId) {
+    try {
+        const formData = new FormData();
+        formData.append('entrada_id', entradaId);
+
+        const response = await fetch('php/anular_entrada.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            mostrarAlerta('Entrada anulada correctamente', 'success');
+            cargarUltimasEntradas(); // Recargar la lista
+        } else {
+            mostrarAlerta('Error: ' + result.error, 'danger');
+        }
+
+    } catch (error) {
+        console.error('Error al anular entrada:', error);
+        mostrarAlerta('Error al anular la entrada', 'danger');
+    }
 }
