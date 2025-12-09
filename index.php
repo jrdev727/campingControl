@@ -24,13 +24,31 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
     <link rel="stylesheet" href="css/styles.css">
     <style>
         @media print {
-            body * { visibility: hidden; }
-            #ticket-print, #ticket-print * { visibility: visible; }
+            @page {
+                size: 80mm auto;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body > *:not(#ticket-print) {
+                display: none !important;
+            }
+
             #ticket-print {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 80mm;
+                display: block !important;
+                position: static !important;
+                width: 80mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+
+            #ticket-print * {
+                visibility: visible !important;
             }
         }
         .entrada-item {

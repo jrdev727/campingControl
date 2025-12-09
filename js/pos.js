@@ -225,17 +225,26 @@ Precio: $${item.precio.toLocaleString('es-AR')}
 
     document.getElementById('ticket-contenido').innerHTML = contenido;
 
-    // Imprimir
-    window.print();
+    // Mostrar el ticket temporalmente para impresión
+    const ticketDiv = document.getElementById('ticket-print');
+    ticketDiv.style.display = 'block';
 
-    // Limpiar carrito después de imprimir
+    // Imprimir
     setTimeout(() => {
-        carrito = [];
-        actualizarCarrito();
-        document.getElementById('btn-imprimir').style.display = 'none';
-        document.getElementById('btn-registrar').style.display = 'block';
-        mostrarAlerta('Carrito limpiado. Listo para nueva venta.', 'success');
-    }, 500);
+        window.print();
+
+        // Ocultar el ticket después de imprimir
+        ticketDiv.style.display = 'none';
+
+        // Limpiar carrito después de imprimir
+        setTimeout(() => {
+            carrito = [];
+            actualizarCarrito();
+            document.getElementById('btn-imprimir').style.display = 'none';
+            document.getElementById('btn-registrar').style.display = 'block';
+            mostrarAlerta('Carrito limpiado. Listo para nueva venta.', 'success');
+        }, 500);
+    }, 100);
 });
 
 // Función para mostrar alertas
