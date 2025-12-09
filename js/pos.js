@@ -207,18 +207,18 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
         for (let i = 0; i < item.cantidad; i++) {
             ticketNum++;
             contenido += `
-                <div style="page-break-after: always; padding: 10px 0;">
-                    <div style="text-align: center; margin-bottom: 10px;">Ticket de Ingreso</div>
-                    <div style="text-align: center; font-weight: bold; margin-bottom: 10px;">CAMPING SONRISAS COMPARTIDAS</div>
-                    <div>----------------------------</div>
-                    <div><strong>Ticket #${ticketNum}</strong></div>
-                    <div><strong>Tipo:</strong> ${nombresTipos[item.tipo] || item.nombre}</div>
-                    <div>&nbsp;</div>
-                    <div><strong>Fecha:</strong> ${fechaFormateada}</div>
-                    <div><strong>Hora:</strong> ${horaFormateada}</div>
-                    <div><strong>Precio:</strong> $${item.precio.toLocaleString('es-AR')}</div>
-                    <div>----------------------------</div>
-                </div>
+<pre style="page-break-after: always; font-family: 'Courier New', monospace; font-size: 12px;">
+         Ticket de Ingreso
+   CAMPING SONRISAS COMPARTIDAS
+----------------------------
+Ticket #${ticketNum}
+Tipo: ${nombresTipos[item.tipo] || item.nombre}
+
+Fecha: ${fechaFormateada}
+Hora: ${horaFormateada}
+Precio: $${item.precio.toLocaleString('es-AR')}
+----------------------------
+</pre>
             `;
         }
     });
