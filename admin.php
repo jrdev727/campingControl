@@ -42,7 +42,7 @@ $esAdmin = true;
             <!-- Métricas principales -->
             <div class="row g-4 mb-4">
                 <!-- Entradas Hoy -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="metric-card">
                         <div class="metric-icon-wrapper">
                             <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@ $esAdmin = true;
                 </div>
 
                 <!-- Entradas del Mes -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="metric-card">
                         <div class="metric-icon-wrapper">
                             <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@ $esAdmin = true;
                 </div>
 
                 <!-- Comparación con Ayer -->
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="metric-card">
                         <div class="metric-icon-wrapper">
                             <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,6 +87,18 @@ $esAdmin = true;
                         <div class="metric-label">Entradas vs Ayer</div>
                         <div class="metric-value" id="comparacion-ayer">0</div>
                         <span class="metric-change" id="cambio-ayer">0%</span>
+                    </div>
+                </div>
+
+                <!-- Clima Actual -->
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="metric-card">
+                        <div class="metric-label">Clima Actual</div>
+                        <div id="clima-widget" style="min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -113,20 +125,6 @@ $esAdmin = true;
                         </div>
                         <div class="card-body">
                             <canvas id="chartTipos" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Widget del Clima -->
-                <div class="col-12 col-xl-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Clima Actual</h3>
-                        </div>
-                        <div class="card-body text-center" id="clima-widget">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Cargando...</span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -326,7 +324,6 @@ $esAdmin = true;
                     const temp = current.temp_C;
                     const desc = current.lang_es ? current.lang_es[0].value : current.weatherDesc[0].value;
                     const humidity = current.humidity;
-                    const windKmph = current.windspeedKmph;
 
                     // Get weather icon based on weather code
                     const weatherCode = current.weatherCode;
@@ -341,21 +338,16 @@ $esAdmin = true;
                     else if (['227', '230', '323', '326', '329', '332', '335', '338', '368', '371', '374', '377'].includes(weatherCode)) iconClass = '🌨️'; // Snow
 
                     document.getElementById('clima-widget').innerHTML = `
-                        <div style="font-size: 48px; margin-bottom: 10px;">${iconClass}</div>
-                        <h2 class="mb-2">${temp}°C</h2>
-                        <p class="text-muted mb-2">${desc}</p>
-                        <div class="d-flex justify-content-center gap-3">
-                            <small>💧 ${humidity}%</small>
-                            <small>💨 ${windKmph} km/h</small>
-                        </div>
-                        <small class="text-muted mt-2 d-block">General Belgrano, BA</small>
+                        <div style="font-size: 36px; margin-bottom: 5px;">${iconClass}</div>
+                        <div class="metric-value" style="font-size: 28px; margin-bottom: 5px;">${temp}°C</div>
+                        <div class="text-gray-500" style="font-size: 12px;">${desc}</div>
+                        <div class="text-gray-500" style="font-size: 11px; margin-top: 3px;">💧 ${humidity}%</div>
                     `;
                 })
                 .catch(error => {
                     console.error('Error al cargar clima:', error);
                     document.getElementById('clima-widget').innerHTML = `
-                        <p class="text-muted">No se pudo cargar el clima</p>
-                        <small>Intente nuevamente más tarde</small>
+                        <div class="text-muted" style="font-size: 12px;">No disponible</div>
                     `;
                 });
         }
