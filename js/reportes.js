@@ -73,13 +73,34 @@ function actualizarReporteEntradas(data) {
     let breakdownHTML = '';
 
     const nombresTipos = {
-        'turista_adulto': 'No Residente Adulto',
-        'turista_niño': 'No Residente Niño',
-        'local': 'Residente'
+        'turista_adulto': 'No Residente (Adulto)',
+        'turista_niño': 'No Residente (Niño)',
+        'local': 'Residente',
+        // Variaciones antiguas
+        'no_residente_adulto': 'No Residente (Adulto)',
+        'No Residente Adulto': 'No Residente (Adulto)',
+        'no_residente_niño': 'No Residente (Niño)',
+        'No Residente Niño': 'No Residente (Niño)',
+        'residente': 'Residente',
+        'Residente': 'Residente'
     };
 
+    // Agrupar por nombre normalizado
+    const porTipoNormalizado = {};
     for (const [tipo, datos] of Object.entries(data.por_tipo)) {
-        const nombre = nombresTipos[tipo] || tipo;
+        const nombreNormalizado = nombresTipos[tipo] || tipo;
+        if (!porTipoNormalizado[nombreNormalizado]) {
+            porTipoNormalizado[nombreNormalizado] = {
+                cantidad: 0,
+                total: 0,
+                precio_unitario: datos.precio_unitario
+            };
+        }
+        porTipoNormalizado[nombreNormalizado].cantidad += datos.cantidad;
+        porTipoNormalizado[nombreNormalizado].total += datos.total;
+    }
+
+    for (const [nombre, datos] of Object.entries(porTipoNormalizado)) {
         breakdownHTML += `
             <div class="breakdown-item">
                 <div>
@@ -102,13 +123,30 @@ function actualizarGraficoEntradas(porTipo) {
     const ctx = document.getElementById('chartEntradasTipo').getContext('2d');
 
     const nombresTipos = {
-        'turista_adulto': 'No Residente Adulto',
-        'turista_niño': 'No Residente Niño',
-        'local': 'Residente'
+        'turista_adulto': 'No Residente (Adulto)',
+        'turista_niño': 'No Residente (Niño)',
+        'local': 'Residente',
+        // Variaciones antiguas
+        'no_residente_adulto': 'No Residente (Adulto)',
+        'No Residente Adulto': 'No Residente (Adulto)',
+        'no_residente_niño': 'No Residente (Niño)',
+        'No Residente Niño': 'No Residente (Niño)',
+        'residente': 'Residente',
+        'Residente': 'Residente'
     };
 
-    const labels = Object.keys(porTipo).map(tipo => nombresTipos[tipo] || tipo);
-    const values = Object.values(porTipo).map(datos => datos.cantidad);
+    // Agrupar por nombre normalizado
+    const porTipoNormalizado = {};
+    for (const [tipo, datos] of Object.entries(porTipo)) {
+        const nombreNormalizado = nombresTipos[tipo] || tipo;
+        if (!porTipoNormalizado[nombreNormalizado]) {
+            porTipoNormalizado[nombreNormalizado] = { cantidad: 0 };
+        }
+        porTipoNormalizado[nombreNormalizado].cantidad += datos.cantidad;
+    }
+
+    const labels = Object.keys(porTipoNormalizado);
+    const values = Object.values(porTipoNormalizado).map(datos => datos.cantidad);
     const colores = ['#5A99D4', '#C9A961', '#5BACAD'];
 
     if (chartEntradasTipo) {
