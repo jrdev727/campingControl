@@ -1,9 +1,26 @@
 // Sistema de Punto de Venta
 let carrito = [];
+let entradaIdAAnular = null; // ID de entrada a anular
 
-// Cargar últimas entradas al iniciar
+// Cargar últimas entradas al iniciar y configurar modal
 document.addEventListener('DOMContentLoaded', function() {
     cargarUltimasEntradas();
+
+    // Configurar botón de confirmación del modal
+    const btnConfirmarAnular = document.getElementById('btn-confirmar-anular');
+    if (btnConfirmarAnular) {
+        btnConfirmarAnular.addEventListener('click', function() {
+            if (entradaIdAAnular !== null) {
+                // Cerrar el modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalAnularEntrada'));
+                modal.hide();
+
+                // Anular la entrada
+                anularEntrada(entradaIdAAnular);
+                entradaIdAAnular = null;
+            }
+        });
+    }
 });
 
 const precios = {
@@ -335,9 +352,9 @@ async function cargarUltimasEntradas() {
 
 // Confirmar anulación de entrada
 function confirmarAnular(entradaId) {
-    if (confirm('¿Está seguro de anular esta entrada?\n\nEsta acción marcará la entrada como anulada y no se podrá revertir.')) {
-        anularEntrada(entradaId);
-    }
+    entradaIdAAnular = entradaId;
+    const modal = new bootstrap.Modal(document.getElementById('modalAnularEntrada'));
+    modal.show();
 }
 
 // Anular entrada
