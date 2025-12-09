@@ -102,30 +102,75 @@ $esAdmin = true;
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Tabla de Últimas Entradas -->
-                <div class="col-12">
-                    <div class="data-table">
-                        <div class="data-table-header">
-                            <h3 class="data-table-title">Últimas Entradas Registradas</h3>
+            <!-- Estadísticas Adicionales -->
+            <div class="row g-4 mt-2">
+                <!-- Ticket Promedio -->
+                <div class="col-12 col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper">
+                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>DNI</th>
-                                        <th>Tipo</th>
-                                        <th>Precio</th>
-                                        <th>Fecha/Hora</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-ultimas-entradas">
-                                    <tr>
-                                        <td colspan="5" class="text-center text-gray-500">Cargando datos...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="metric-label">Ticket Promedio Hoy</div>
+                        <div class="metric-value">$<span id="ticket-promedio">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Hora Pico -->
+                <div class="col-12 col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper">
+                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="metric-label">Hora Pico Hoy</div>
+                        <div class="metric-value" id="hora-pico">--</div>
+                    </div>
+                </div>
+
+                <!-- Comparación con Ayer -->
+                <div class="col-12 col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon-wrapper">
+                            <svg class="metric-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                        </div>
+                        <div class="metric-label">Entradas vs Ayer</div>
+                        <div class="metric-value" id="comparacion-ayer">0</div>
+                        <span class="metric-change" id="cambio-ayer">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Entradas por Hora y Clima -->
+            <div class="row g-4 mt-2">
+                <!-- Gráfico de Entradas por Hora -->
+                <div class="col-12 col-xl-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Entradas por Hora - Hoy</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chartHoras" height="280"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget del Clima -->
+                <div class="col-12 col-xl-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Clima Actual</h3>
+                        </div>
+                        <div class="card-body text-center" id="clima-widget">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -139,12 +184,16 @@ $esAdmin = true;
     <script>
         let chartIngresos = null;
         let chartTipos = null;
+        let chartHoras = null;
 
         // Cargar estadísticas al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
             cargarEstadisticas();
+            cargarClima();
             // Actualizar cada 30 segundos
             setInterval(cargarEstadisticas, 30000);
+            // Actualizar clima cada 10 minutos
+            setInterval(cargarClima, 600000);
         });
 
         function cargarEstadisticas() {
@@ -164,16 +213,15 @@ $esAdmin = true;
         }
 
         function actualizarDashboard(data) {
-            // Actualizar métricas
+            // Actualizar métricas principales
             document.getElementById('entradas-hoy').textContent = data.entradas_hoy.total;
             document.getElementById('ingresos-hoy').textContent = formatearPrecio(data.entradas_hoy.ingresos);
 
             document.getElementById('entradas-mes').textContent = data.entradas_mes.total;
 
-            // Actualizar cambio porcentual
+            // Actualizar cambio porcentual del mes
             const cambioMes = document.getElementById('cambio-mes');
             const porcentaje = data.entradas_mes.cambio_porcentaje || 0;
-            cambioMes.textContent = Math.abs(porcentaje).toFixed(1) + '%';
 
             if (porcentaje >= 0) {
                 cambioMes.className = 'metric-change positive';
@@ -193,14 +241,51 @@ $esAdmin = true;
                 `;
             }
 
-            // Actualizar gráfico de ingresos
+            // Actualizar estadísticas adicionales
+            document.getElementById('ticket-promedio').textContent = formatearPrecio(data.promedio_ticket || 0);
+
+            // Hora pico
+            const horaPico = data.hora_pico;
+            if (horaPico !== null && horaPico !== undefined) {
+                document.getElementById('hora-pico').textContent = `${horaPico}:00`;
+            } else {
+                document.getElementById('hora-pico').textContent = '--';
+            }
+
+            // Comparación con ayer
+            const hoy = data.entradas_hoy.total;
+            const ayer = data.ayer.total;
+            document.getElementById('comparacion-ayer').textContent = hoy;
+
+            const cambioAyer = document.getElementById('cambio-ayer');
+            if (ayer > 0) {
+                const porcentajeAyer = ((hoy - ayer) / ayer) * 100;
+                if (porcentajeAyer >= 0) {
+                    cambioAyer.className = 'metric-change positive';
+                    cambioAyer.innerHTML = `
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                        </svg>
+                        +${Math.abs(porcentajeAyer).toFixed(1)}%
+                    `;
+                } else {
+                    cambioAyer.className = 'metric-change negative';
+                    cambioAyer.innerHTML = `
+                        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                        ${Math.abs(porcentajeAyer).toFixed(1)}%
+                    `;
+                }
+            } else {
+                cambioAyer.className = 'metric-change';
+                cambioAyer.textContent = hoy > 0 ? '+100%' : '0%';
+            }
+
+            // Actualizar gráficos
             actualizarGraficoIngresos(data.ingresos_semana);
-
-            // Actualizar gráfico de tipos
             actualizarGraficoTipos(data.tipos_entrada);
-
-            // Actualizar tabla
-            actualizarTablaUltimas(data.ultimas_entradas);
+            actualizarGraficoHoras(data.entradas_por_hora);
         }
 
         function actualizarGraficoIngresos(datos) {
@@ -288,26 +373,103 @@ $esAdmin = true;
             });
         }
 
-        function actualizarTablaUltimas(entradas) {
-            const tbody = document.getElementById('tabla-ultimas-entradas');
+        function actualizarGraficoHoras(datos) {
+            const ctx = document.getElementById('chartHoras').getContext('2d');
 
-            if (entradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500">No hay entradas registradas</td></tr>';
-                return;
+            // Crear array de 24 horas con valores
+            const horas = Array.from({length: 24}, (_, i) => i);
+            const valores = horas.map(h => datos[h] || 0);
+            const labels = horas.map(h => `${h}:00`);
+
+            if (chartHoras) {
+                chartHoras.destroy();
             }
 
-            tbody.innerHTML = entradas.map(entrada => `
-                <tr>
-                    <td>#${entrada.id}</td>
-                    <td>${entrada.dni}</td>
-                    <td><span class="badge badge-primary">${entrada.tipo}</span></td>
-                    <td>$${formatearPrecio(entrada.precio)}</td>
-                    <td>${entrada.fecha}</td>
-                </tr>
-            `).join('');
+            chartHoras = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Entradas',
+                        data: valores,
+                        backgroundColor: '#465fff',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function cargarClima() {
+            // Using wttr.in free weather service (no API key needed)
+            // Location: General Belgrano, Buenos Aires, Argentina
+            fetch('https://wttr.in/General_Belgrano,Buenos_Aires?format=j1')
+                .then(response => response.json())
+                .then(data => {
+                    const current = data.current_condition[0];
+                    const temp = current.temp_C;
+                    const desc = current.lang_es ? current.lang_es[0].value : current.weatherDesc[0].value;
+                    const humidity = current.humidity;
+                    const windKmph = current.windspeedKmph;
+
+                    // Get weather icon based on weather code
+                    const weatherCode = current.weatherCode;
+                    let iconClass = '☀️'; // Default sunny
+
+                    if (weatherCode === '113') iconClass = '☀️'; // Sunny
+                    else if (['116', '119', '122'].includes(weatherCode)) iconClass = '⛅'; // Partly cloudy
+                    else if (['143', '248', '260'].includes(weatherCode)) iconClass = '🌫️'; // Fog
+                    else if (['176', '263', '266', '293', '296'].includes(weatherCode)) iconClass = '🌦️'; // Light rain
+                    else if (['299', '302', '305', '308', '356', '359'].includes(weatherCode)) iconClass = '🌧️'; // Rain
+                    else if (['200', '386', '389', '392', '395'].includes(weatherCode)) iconClass = '⛈️'; // Thunderstorm
+                    else if (['227', '230', '323', '326', '329', '332', '335', '338', '368', '371', '374', '377'].includes(weatherCode)) iconClass = '🌨️'; // Snow
+
+                    document.getElementById('clima-widget').innerHTML = `
+                        <div style="font-size: 48px; margin-bottom: 10px;">${iconClass}</div>
+                        <h2 class="mb-2">${temp}°C</h2>
+                        <p class="text-muted mb-2">${desc}</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <small>💧 ${humidity}%</small>
+                            <small>💨 ${windKmph} km/h</small>
+                        </div>
+                        <small class="text-muted mt-2 d-block">General Belgrano, BA</small>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error al cargar clima:', error);
+                    document.getElementById('clima-widget').innerHTML = `
+                        <p class="text-muted">No se pudo cargar el clima</p>
+                        <small>Intente nuevamente más tarde</small>
+                    `;
+                });
         }
 
         function formatearPrecio(precio) {
+            if (precio === undefined || precio === null || isNaN(precio)) {
+                return '0';
+            }
             return precio.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
         }
 

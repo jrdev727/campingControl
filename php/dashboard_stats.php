@@ -161,6 +161,28 @@ try {
         'ingresos' => (float)($datos_ayer['ingresos'] ?? 0)
     ];
 
+    // Entradas por hora (hoy) para gráfico
+    $sql_horas = "SELECT HOUR(fecha_hora) as hora, COUNT(*) as total
+                  FROM entradas
+                  WHERE DATE(fecha_hora) = CURDATE()
+                  AND estado = 'activo'
+                  GROUP BY HOUR(fecha_hora)
+                  ORDER BY hora ASC";
+    $resultado_horas = $conn->query($sql_horas);
+    $entradas_por_hora = [];
+    while ($row = $resultado_horas->fetch_assoc()) {
+        $entradas_por_hora[(int)$row['hora']] = (int)$row['total'];
+    }
+    $stats['entradas_por_hora'] = $entradas_por_hora;
+
+    // Hora pico (hora con más entradas hoy)
+    if (!empty($entradas_por_hora)) {
+        $hora_pico = array_search(max($entradas_por_hora), $entradas_por_hora);
+        $stats['hora_pico'] = $hora_pico;
+    } else {
+        $stats['hora_pico'] = null;
+    }
+
     // Enviar respuesta exitosa
     echo json_encode([
         'success' => true,
