@@ -58,6 +58,7 @@ function actualizarCarrito() {
                 El carrito está vacío
             </p>
         `;
+        totalItems.textContent = '0';
         totalSection.style.display = 'none';
         btnLimpiar.style.display = 'none';
         return;
@@ -242,7 +243,6 @@ Precio: $${item.precio.toLocaleString('es-AR')}
             actualizarCarrito();
             document.getElementById('btn-imprimir').style.display = 'none';
             document.getElementById('btn-registrar').style.display = 'block';
-            mostrarAlerta('Carrito limpiado. Listo para nueva venta.', 'success');
         }, 500);
     }, 100);
 });
