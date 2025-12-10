@@ -12,6 +12,7 @@ ver_estructura.php
 verificar_tabla_entradas.php
 cifrar_contraseñas.php
 test_conexion.php
+test_reportes.php
 
 # ============================================
 # IDEs y Editores
