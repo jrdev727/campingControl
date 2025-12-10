@@ -1,0 +1,35 @@
+# ============================================
+# Archivos de configuración con credenciales
+# ============================================
+# NO subir archivos con credenciales de base de datos
+php/conexion.php
+
+# Archivos de depuración y utilidades locales
+debug_usuarios.php
+reset_password.php
+ver_estructura.php
+verificar_tabla_entradas.php
+cifrar_contraseñas.php
+test_conexion.php
+
+# ============================================
+# IDEs y Editores
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================
+# Sistema Operativo
+# ============================================
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Logs y temporales
+# ============================================
+*.log
+*.tmp
+/tmp/
