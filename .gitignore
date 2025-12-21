@@ -13,6 +13,7 @@ verificar_tabla_entradas.php
 cifrar_contraseñas.php
 test_conexion.php
 test_reportes.php
+crear_usuarios.php
 
 # ============================================
 # IDEs y Editores
