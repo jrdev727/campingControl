@@ -241,20 +241,20 @@ async function exportarPDFFinanciero() {
         }
 
         const { jsPDF } = window.jspdf;
-        // Formato para ticketera 58mm (ancho: 54mm para compensar márgenes de impresora)
+        // Formato para ticketera (52mm para compensar márgenes de hardware de la impresora)
         const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
-            format: [54, 150] // 54mm de ancho x 150mm de alto
+            format: [52, 150] // 52mm de ancho x 150mm de alto
         });
 
-        const centerX = 27; // Centro del documento (54/2)
+        const centerX = 26; // Centro del documento (52/2)
         let y = 5;
 
         // Separador superior
         doc.setDrawColor(0);
         doc.setLineWidth(0.5);
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 5;
 
         // Título
@@ -271,7 +271,7 @@ async function exportarPDFFinanciero() {
         y += 6;
 
         // Separador
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 5;
 
         // Período
@@ -288,7 +288,7 @@ async function exportarPDFFinanciero() {
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 5;
 
         // Total de Entradas
@@ -303,7 +303,7 @@ async function exportarPDFFinanciero() {
         // Separador
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7);
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 5;
 
         // Ingresos Totales
@@ -317,7 +317,7 @@ async function exportarPDFFinanciero() {
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 5;
 
         // Pie de página
@@ -331,7 +331,7 @@ async function exportarPDFFinanciero() {
         });
         doc.text(`Generado: ${fecha}`, centerX, y, { align: 'center' });
         y += 4;
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
 
         // Guardar
         doc.save(`reporte-financiero-${fechaDesde}-${fechaHasta}.pdf`);
@@ -368,20 +368,20 @@ async function exportarPDF() {
         const alturaPorFila = 8;
         const alturaTotal = alturaBase + (result.data.por_fecha.length * alturaPorFila);
 
-        // Formato para ticketera 58mm (54mm para compensar márgenes)
+        // Formato para ticketera (52mm para compensar márgenes de hardware)
         const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
-            format: [54, Math.max(150, alturaTotal)]
+            format: [52, Math.max(150, alturaTotal)]
         });
 
-        const centerX = 27;
+        const centerX = 26;
         let y = 5;
 
         // Separador superior
         doc.setDrawColor(0);
         doc.setLineWidth(0.5);
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 5;
 
         // Título
@@ -396,7 +396,7 @@ async function exportarPDF() {
         y += 6;
 
         // Separador
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 5;
 
         // Período
@@ -409,19 +409,19 @@ async function exportarPDF() {
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 4;
 
         // Resumen
         doc.setFontSize(7);
         doc.text('Total Ingresos:', 1, y);
         doc.setFont('helvetica', 'bold');
-        doc.text(`$${formatearPrecio(result.data.totales.total)}`, 53, y, { align: 'right' });
+        doc.text(`$${formatearPrecio(result.data.totales.total)}`, 51, y, { align: 'right' });
         y += 5;
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 4;
 
         // Encabezado tabla
@@ -429,11 +429,11 @@ async function exportarPDF() {
         doc.setFont('helvetica', 'bold');
         doc.text('FECHA', 1, y);
         doc.text('ENT', 28, y);
-        doc.text('TOTAL', 53, y, { align: 'right' });
+        doc.text('TOTAL', 51, y, { align: 'right' });
         y += 3;
 
         doc.setLineWidth(0.3);
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 3;
 
         // Filas de la tabla
@@ -449,7 +449,7 @@ async function exportarPDF() {
             doc.text(`${fila.cantidad_entradas}`, 31, y, { align: 'right' });
 
             // Total
-            doc.text(`$${formatearPrecio(fila.total)}`, 53, y, { align: 'right' });
+            doc.text(`$${formatearPrecio(fila.total)}`, 51, y, { align: 'right' });
 
             y += 4;
 
@@ -457,14 +457,14 @@ async function exportarPDF() {
             if ((index + 1) % 3 === 0 && index < result.data.por_fecha.length - 1) {
                 doc.setLineWidth(0.1);
                 doc.setDrawColor(200);
-                doc.line(0, y - 1, 54, y - 1);
+                doc.line(0, y - 1, 52, y - 1);
                 doc.setDrawColor(0);
             }
         });
 
         // Separador final
         doc.setLineWidth(0.5);
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
         y += 4;
 
         // Pie de página
@@ -478,7 +478,7 @@ async function exportarPDF() {
         });
         doc.text(`Generado: ${fecha}`, centerX, y, { align: 'center' });
         y += 3;
-        doc.line(0, y, 54, y);
+        doc.line(0, y, 52, y);
 
         // Guardar
         doc.save(`reporte-entradas-${fechaDesde}-${fechaHasta}.pdf`);
