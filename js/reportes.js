@@ -209,13 +209,14 @@ async function generarReporteFinanciero() {
             document.getElementById('total-entradas-fin').textContent = result.data.total_entradas || 0;
             document.getElementById('ingresos-totales-fin').textContent = formatearPrecio(result.data.ingresos_totales);
 
-            // Mostrar botón de exportar PDF
+            // Mostrar botones de exportar e imprimir
             const btnPDF = document.getElementById('btn-exportar-financiero');
+            const btnImprimir = document.getElementById('btn-imprimir-financiero');
             if (btnPDF) {
                 btnPDF.style.display = 'block';
-                console.log('Botón PDF mostrado');
-            } else {
-                console.error('No se encontró el botón btn-exportar-financiero');
+            }
+            if (btnImprimir) {
+                btnImprimir.style.display = 'block';
             }
         }
     } catch (error) {
@@ -498,4 +499,128 @@ function formatearPrecio(precio) {
         return '0';
     }
     return precio.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+// ============================================
+// FUNCIONES DE IMPRESIÓN DIRECTA (58mm)
+// ============================================
+
+// Imprimir reporte financiero en ticketera
+async function imprimirReporteFinanciero() {
+    const fechaDesde = document.getElementById('fecha-desde-financiero').value;
+    const fechaHasta = document.getElementById('fecha-hasta-financiero').value;
+
+    const totalEntradas = document.getElementById('total-entradas-fin').textContent;
+    const ingresosTotales = document.getElementById('ingresos-totales-fin').textContent;
+
+    const fecha = new Date().toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    const reporteDiv = document.getElementById('reporte-print');
+    reporteDiv.innerHTML = `
+        <div class="separador"></div>
+        <div class="titulo">REPORTE FINANCIERO</div>
+        <div class="subtitulo">Camping Sonrisas Compartidas</div>
+        <div class="separador"></div>
+        <div class="campo" style="text-align: center;">PERIODO:</div>
+        <div class="campo" style="text-align: center; font-weight: bold;">${fechaDesde}</div>
+        <div class="campo" style="text-align: center; font-weight: bold;">a</div>
+        <div class="campo" style="text-align: center; font-weight: bold;">${fechaHasta}</div>
+        <div class="separador"></div>
+        <div class="campo" style="text-align: center;">Total de Entradas:</div>
+        <div class="valor-grande">${totalEntradas}</div>
+        <div class="separador"></div>
+        <div class="campo" style="text-align: center;">Ingresos Totales:</div>
+        <div class="valor-grande">$${ingresosTotales}</div>
+        <div class="separador"></div>
+        <div class="pie">Generado: ${fecha}</div>
+        <div class="separador"></div>
+    `;
+
+    reporteDiv.style.display = 'block';
+    setTimeout(() => {
+        window.print();
+        reporteDiv.style.display = 'none';
+    }, 100);
+}
+
+// Imprimir reporte de entradas en ticketera
+async function imprimirReporteEntradas() {
+    const fechaDesde = document.getElementById('fecha-desde-entradas').value;
+    const fechaHasta = document.getElementById('fecha-hasta-entradas').value;
+
+    try {
+        const params = new URLSearchParams({
+            fecha_desde: fechaDesde,
+            fecha_hasta: fechaHasta
+        });
+
+        const response = await fetch(`php/reporte_pdf.php?${params}`);
+        const result = await response.json();
+
+        if (!result.success) {
+            alert('Error al generar el reporte');
+            return;
+        }
+
+        const fecha = new Date().toLocaleDateString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        let contenidoTabla = '';
+        result.data.por_fecha.forEach(fila => {
+            const fechaCorta = fila.fecha.split('-').reverse().join('/');
+            contenidoTabla += `
+                <div class="fila-tabla">
+                    <span>${fechaCorta}</span>
+                    <span>${fila.cantidad_entradas} ent</span>
+                    <span>$${formatearPrecio(fila.total)}</span>
+                </div>
+            `;
+        });
+
+        const reporteDiv = document.getElementById('reporte-print');
+        reporteDiv.innerHTML = `
+            <div class="separador"></div>
+            <div class="titulo">REPORTE DE ENTRADAS</div>
+            <div class="subtitulo">Camping Sonrisas</div>
+            <div class="separador"></div>
+            <div class="campo" style="text-align: center;">PERIODO:</div>
+            <div class="campo" style="text-align: center; font-weight: bold;">${fechaDesde} a ${fechaHasta}</div>
+            <div class="separador"></div>
+            <div class="campo">
+                <span>Total Ingresos:</span>
+                <span style="float: right; font-weight: bold;">$${formatearPrecio(result.data.totales.total)}</span>
+            </div>
+            <div class="separador"></div>
+            <div class="fila-tabla" style="font-weight: bold; margin-bottom: 2mm;">
+                <span>FECHA</span>
+                <span>ENT</span>
+                <span>TOTAL</span>
+            </div>
+            ${contenidoTabla}
+            <div class="separador"></div>
+            <div class="pie">Generado: ${fecha}</div>
+            <div class="separador"></div>
+        `;
+
+        reporteDiv.style.display = 'block';
+        setTimeout(() => {
+            window.print();
+            reporteDiv.style.display = 'none';
+        }, 100);
+
+    } catch (error) {
+        console.error('Error al imprimir reporte:', error);
+        alert('Error al generar el reporte para impresión');
+    }
 }
