@@ -254,7 +254,7 @@ async function exportarPDFFinanciero() {
         // Separador superior
         doc.setDrawColor(0);
         doc.setLineWidth(0.5);
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 5;
 
         // Título
@@ -271,7 +271,7 @@ async function exportarPDFFinanciero() {
         y += 6;
 
         // Separador
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 5;
 
         // Período
@@ -288,7 +288,7 @@ async function exportarPDFFinanciero() {
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 5;
 
         // Total de Entradas
@@ -303,7 +303,7 @@ async function exportarPDFFinanciero() {
         // Separador
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7);
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 5;
 
         // Ingresos Totales
@@ -317,7 +317,7 @@ async function exportarPDFFinanciero() {
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 5;
 
         // Pie de página
@@ -331,7 +331,7 @@ async function exportarPDFFinanciero() {
         });
         doc.text(`Generado: ${fecha}`, centerX, y, { align: 'center' });
         y += 4;
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
 
         // Guardar
         doc.save(`reporte-financiero-${fechaDesde}-${fechaHasta}.pdf`);
@@ -381,7 +381,7 @@ async function exportarPDF() {
         // Separador superior
         doc.setDrawColor(0);
         doc.setLineWidth(0.5);
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 5;
 
         // Título
@@ -396,7 +396,7 @@ async function exportarPDF() {
         y += 6;
 
         // Separador
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 5;
 
         // Período
@@ -409,31 +409,31 @@ async function exportarPDF() {
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 4;
 
         // Resumen
         doc.setFontSize(7);
-        doc.text('Total Ingresos:', 3, y);
+        doc.text('Total Ingresos:', 1, y);
         doc.setFont('helvetica', 'bold');
-        doc.text(`$${formatearPrecio(result.data.totales.total)}`, 51, y, { align: 'right' });
+        doc.text(`$${formatearPrecio(result.data.totales.total)}`, 53, y, { align: 'right' });
         y += 5;
 
         // Separador
         doc.setFont('helvetica', 'normal');
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 4;
 
         // Encabezado tabla
         doc.setFontSize(6);
         doc.setFont('helvetica', 'bold');
-        doc.text('FECHA', 3, y);
-        doc.text('ENT', 30, y);
-        doc.text('TOTAL', 51, y, { align: 'right' });
+        doc.text('FECHA', 1, y);
+        doc.text('ENT', 28, y);
+        doc.text('TOTAL', 53, y, { align: 'right' });
         y += 3;
 
         doc.setLineWidth(0.3);
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 3;
 
         // Filas de la tabla
@@ -443,13 +443,13 @@ async function exportarPDF() {
         result.data.por_fecha.forEach((fila, index) => {
             // Fecha (formato corto)
             const fechaCorta = fila.fecha.split('-').reverse().join('/');
-            doc.text(fechaCorta, 3, y);
+            doc.text(fechaCorta, 1, y);
 
             // Cantidad de entradas
-            doc.text(`${fila.cantidad_entradas}`, 33, y, { align: 'right' });
+            doc.text(`${fila.cantidad_entradas}`, 31, y, { align: 'right' });
 
             // Total
-            doc.text(`$${formatearPrecio(fila.total)}`, 51, y, { align: 'right' });
+            doc.text(`$${formatearPrecio(fila.total)}`, 53, y, { align: 'right' });
 
             y += 4;
 
@@ -457,14 +457,14 @@ async function exportarPDF() {
             if ((index + 1) % 3 === 0 && index < result.data.por_fecha.length - 1) {
                 doc.setLineWidth(0.1);
                 doc.setDrawColor(200);
-                doc.line(2, y - 1, 52, y - 1);
+                doc.line(0, y - 1, 54, y - 1);
                 doc.setDrawColor(0);
             }
         });
 
         // Separador final
         doc.setLineWidth(0.5);
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
         y += 4;
 
         // Pie de página
@@ -478,7 +478,7 @@ async function exportarPDF() {
         });
         doc.text(`Generado: ${fecha}`, centerX, y, { align: 'center' });
         y += 3;
-        doc.line(2, y, 52, y);
+        doc.line(0, y, 54, y);
 
         // Guardar
         doc.save(`reporte-entradas-${fechaDesde}-${fechaHasta}.pdf`);
