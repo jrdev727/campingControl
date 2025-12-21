@@ -248,12 +248,6 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h3 class="card-title">Entradas por Tipo</h3>
                                     <div class="d-flex gap-2">
-                                        <button class="btn btn-sm btn-success" onclick="imprimirReporteEntradas()">
-                                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
-                                                <path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                                            </svg>
-                                            Imprimir
-                                        </button>
                                         <button class="btn btn-sm btn-primary" onclick="exportarPDF()">
                                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 4px;">
                                                 <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
@@ -316,14 +310,8 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                     Generar
                                 </button>
                             </div>
-                            <div class="col-md-3 d-flex align-items-end gap-2">
-                                <button class="btn btn-success flex-fill" onclick="imprimirReporteFinanciero()" id="btn-imprimir-financiero" style="display: none;">
-                                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                                    </svg>
-                                    Imprimir
-                                </button>
-                                <button class="btn btn-primary flex-fill" onclick="exportarPDFFinanciero()" id="btn-exportar-financiero" style="display: none;">
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-primary w-100" onclick="exportarPDFFinanciero()" id="btn-exportar-financiero" style="display: none;">
                                     <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                     </svg>

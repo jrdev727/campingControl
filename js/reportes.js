@@ -209,14 +209,10 @@ async function generarReporteFinanciero() {
             document.getElementById('total-entradas-fin').textContent = result.data.total_entradas || 0;
             document.getElementById('ingresos-totales-fin').textContent = formatearPrecio(result.data.ingresos_totales);
 
-            // Mostrar botones de exportar e imprimir
+            // Mostrar botón de exportar
             const btnPDF = document.getElementById('btn-exportar-financiero');
-            const btnImprimir = document.getElementById('btn-imprimir-financiero');
             if (btnPDF) {
                 btnPDF.style.display = 'block';
-            }
-            if (btnImprimir) {
-                btnImprimir.style.display = 'block';
             }
         }
     } catch (error) {
