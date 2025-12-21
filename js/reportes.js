@@ -416,7 +416,7 @@ async function exportarPDF() {
         doc.setFontSize(7);
         doc.text('Total Ingresos:', 1, y);
         doc.setFont('helvetica', 'bold');
-        doc.text(`$${formatearPrecio(result.data.totales.total)}`, 47, y, { align: 'right' });
+        doc.text(`$${formatearPrecio(result.data.totales.total)}`, 43, y, { align: 'right' });
         y += 5;
 
         // Separador
@@ -428,7 +428,7 @@ async function exportarPDF() {
         doc.setFontSize(6);
         doc.setFont('helvetica', 'bold');
         doc.text('FECHA', 1, y);
-        doc.text('TOTAL', 47, y, { align: 'right' });
+        doc.text('TOTAL', 43, y, { align: 'right' });
         y += 3;
 
         doc.setLineWidth(0.3);
@@ -445,7 +445,7 @@ async function exportarPDF() {
             doc.text(fechaCorta, 1, y);
 
             // Total
-            doc.text(`$${formatearPrecio(fila.total)}`, 47, y, { align: 'right' });
+            doc.text(`$${formatearPrecio(fila.total)}`, 43, y, { align: 'right' });
 
             y += 4;
 
