@@ -244,58 +244,97 @@ async function exportarPDFFinanciero() {
         }
 
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        // Formato para ticketera 58mm (ancho: 58mm, alto: variable)
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [58, 150] // 58mm de ancho x 150mm de alto
+        });
+
+        const centerX = 29; // Centro del documento (58/2)
+        let y = 5;
+
+        // Separador superior
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.5);
+        doc.line(5, y, 53, y);
+        y += 5;
 
         // Título
-        doc.setFontSize(20);
+        doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
-        doc.text('Reporte Financiero', 105, 20, { align: 'center' });
+        doc.text('REPORTE FINANCIERO', centerX, y, { align: 'center' });
+        y += 5;
 
-        doc.setFontSize(14);
+        doc.setFontSize(8);
         doc.setFont('helvetica', 'normal');
-        doc.text('Camping Sonrisas Compartidas', 105, 30, { align: 'center' });
+        doc.text('Camping Sonrisas', centerX, y, { align: 'center' });
+        y += 4;
+        doc.text('Compartidas', centerX, y, { align: 'center' });
+        y += 6;
+
+        // Separador
+        doc.line(5, y, 53, y);
+        y += 5;
 
         // Período
-        doc.setFontSize(11);
-        doc.setTextColor(100, 100, 100);
-        doc.text(`Período: ${fechaDesde} - ${fechaHasta}`, 105, 40, { align: 'center' });
-
-        let y = 70;
-
-        // Cuadro de Total de Entradas
-        doc.setFillColor(102, 126, 234);
-        doc.roundedRect(20, y, 170, 30, 3, 3, 'F');
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
-        doc.text('Total de Entradas', 30, y + 12);
-
-        doc.setFontSize(22);
+        doc.setFontSize(7);
+        doc.text('PERIODO:', centerX, y, { align: 'center' });
+        y += 4;
         doc.setFont('helvetica', 'bold');
-        doc.text(`${result.data.total_entradas || 0}`, 30, y + 24);
+        doc.text(`${fechaDesde}`, centerX, y, { align: 'center' });
+        y += 3.5;
+        doc.text('a', centerX, y, { align: 'center' });
+        y += 3.5;
+        doc.text(`${fechaHasta}`, centerX, y, { align: 'center' });
+        y += 6;
 
-        y += 45;
-
-        // Cuadro de Ingresos Totales
-        doc.setFillColor(79, 172, 254);
-        doc.roundedRect(20, y, 170, 30, 3, 3, 'F');
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(12);
+        // Separador
         doc.setFont('helvetica', 'normal');
-        doc.text('Ingresos Totales', 30, y + 12);
+        doc.line(5, y, 53, y);
+        y += 5;
 
-        doc.setFontSize(22);
+        // Total de Entradas
+        doc.setFontSize(8);
+        doc.text('Total de Entradas:', centerX, y, { align: 'center' });
+        y += 5;
+        doc.setFontSize(14);
         doc.setFont('helvetica', 'bold');
-        doc.text(`$${formatearPrecio(result.data.ingresos_totales)}`, 30, y + 24);
+        doc.text(`${result.data.total_entradas || 0}`, centerX, y, { align: 'center' });
+        y += 8;
+
+        // Separador
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.line(5, y, 53, y);
+        y += 5;
+
+        // Ingresos Totales
+        doc.setFontSize(8);
+        doc.text('Ingresos Totales:', centerX, y, { align: 'center' });
+        y += 5;
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`$${formatearPrecio(result.data.ingresos_totales)}`, centerX, y, { align: 'center' });
+        y += 8;
+
+        // Separador
+        doc.setFont('helvetica', 'normal');
+        doc.line(5, y, 53, y);
+        y += 5;
 
         // Pie de página
-        doc.setFontSize(9);
-        doc.setTextColor(150, 150, 150);
-        doc.setFont('helvetica', 'normal');
-        const fecha = new Date().toLocaleDateString('es-AR');
-        doc.text(`Generado el ${fecha}`, 105, 280, { align: 'center' });
+        doc.setFontSize(6);
+        const fecha = new Date().toLocaleDateString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        doc.text(`Generado: ${fecha}`, centerX, y, { align: 'center' });
+        y += 4;
+        doc.line(5, y, 53, y);
 
         // Guardar
         doc.save(`reporte-financiero-${fechaDesde}-${fechaHasta}.pdf`);
@@ -327,68 +366,125 @@ async function exportarPDF() {
         }
 
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        // Calcular altura necesaria según cantidad de registros
+        const alturaBase = 80;
+        const alturaPorFila = 8;
+        const alturaTotal = alturaBase + (result.data.por_fecha.length * alturaPorFila);
+
+        // Formato para ticketera 58mm
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [58, Math.max(150, alturaTotal)]
+        });
+
+        const centerX = 29;
+        let y = 5;
+
+        // Separador superior
+        doc.setDrawColor(0);
+        doc.setLineWidth(0.5);
+        doc.line(5, y, 53, y);
+        y += 5;
 
         // Título
-        doc.setFontSize(18);
+        doc.setFontSize(9);
         doc.setFont('helvetica', 'bold');
-        doc.text('Reporte Financiero - Camping Sonrisas', 105, 20, { align: 'center' });
+        doc.text('REPORTE DE ENTRADAS', centerX, y, { align: 'center' });
+        y += 5;
 
-        // Resumen superior
-        doc.setFontSize(12);
+        doc.setFontSize(7);
         doc.setFont('helvetica', 'normal');
-        let y = 35;
+        doc.text('Camping Sonrisas', centerX, y, { align: 'center' });
+        y += 6;
 
-        doc.text(`Ingresos por Entradas: $${formatearPrecio(result.data.totales.ingresos_entradas)}`, 20, y);
-        y += 10;
+        // Separador
+        doc.line(5, y, 53, y);
+        y += 5;
+
+        // Período
+        doc.setFontSize(6);
+        doc.text('PERIODO:', centerX, y, { align: 'center' });
+        y += 3.5;
         doc.setFont('helvetica', 'bold');
-        doc.text(`Total: $${formatearPrecio(result.data.totales.total)}`, 20, y);
+        doc.text(`${fechaDesde} a ${fechaHasta}`, centerX, y, { align: 'center' });
+        y += 5;
 
-        y += 15;
-
-        // Tabla - Encabezado
-        doc.setFillColor(41, 128, 185); // Azul
-        doc.rect(20, y, 170, 10, 'F');
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.text('Fecha', 30, y + 7);
-        doc.text('Entradas', 90, y + 7);
-        doc.text('Total', 150, y + 7);
-
-        y += 10;
-
-        // Tabla - Filas
-        doc.setTextColor(0, 0, 0);
+        // Separador
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
+        doc.line(5, y, 53, y);
+        y += 4;
 
-        let isAlternate = false;
-        result.data.por_fecha.forEach((fila) => {
-            // Alternar color de fondo
-            if (isAlternate) {
-                doc.setFillColor(240, 240, 240);
-                doc.rect(20, y, 170, 8, 'F');
-            }
+        // Resumen
+        doc.setFontSize(7);
+        doc.text('Total Ingresos:', 6, y);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`$${formatearPrecio(result.data.totales.total)}`, 52, y, { align: 'right' });
+        y += 5;
 
-            doc.text(fila.fecha, 30, y + 6);
-            doc.text(`$${formatearPrecio(fila.ingresos_entradas)}`, 90, y + 6);
-            doc.text(`$${formatearPrecio(fila.total)}`, 150, y + 6);
+        // Separador
+        doc.setFont('helvetica', 'normal');
+        doc.line(5, y, 53, y);
+        y += 4;
 
-            y += 8;
-            isAlternate = !isAlternate;
+        // Encabezado tabla
+        doc.setFontSize(6);
+        doc.setFont('helvetica', 'bold');
+        doc.text('FECHA', 8, y);
+        doc.text('ENT', 32, y);
+        doc.text('TOTAL', 52, y, { align: 'right' });
+        y += 3;
 
-            // Nueva página si es necesario
-            if (y > 270) {
-                doc.addPage();
-                y = 20;
-                isAlternate = false;
+        doc.setLineWidth(0.3);
+        doc.line(5, y, 53, y);
+        y += 3;
+
+        // Filas de la tabla
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(6);
+
+        result.data.por_fecha.forEach((fila, index) => {
+            // Fecha (formato corto)
+            const fechaCorta = fila.fecha.split('-').reverse().join('/');
+            doc.text(fechaCorta, 6, y);
+
+            // Cantidad de entradas
+            doc.text(`${fila.cantidad_entradas}`, 35, y, { align: 'right' });
+
+            // Total
+            doc.text(`$${formatearPrecio(fila.total)}`, 52, y, { align: 'right' });
+
+            y += 4;
+
+            // Línea separadora cada 3 filas
+            if ((index + 1) % 3 === 0 && index < result.data.por_fecha.length - 1) {
+                doc.setLineWidth(0.1);
+                doc.setDrawColor(200);
+                doc.line(5, y - 1, 53, y - 1);
+                doc.setDrawColor(0);
             }
         });
 
+        // Separador final
+        doc.setLineWidth(0.5);
+        doc.line(5, y, 53, y);
+        y += 4;
+
+        // Pie de página
+        doc.setFontSize(5);
+        const fecha = new Date().toLocaleDateString('es-AR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        doc.text(`Generado: ${fecha}`, centerX, y, { align: 'center' });
+        y += 3;
+        doc.line(5, y, 53, y);
+
         // Guardar
-        doc.save(`reporte-financiero-${fechaDesde}-${fechaHasta}.pdf`);
+        doc.save(`reporte-entradas-${fechaDesde}-${fechaHasta}.pdf`);
 
     } catch (error) {
         console.error('Error al exportar PDF:', error);
