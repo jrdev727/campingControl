@@ -89,10 +89,17 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                 font-size: 8pt;
                 line-height: 1.3;
                 padding: 2mm;
+                box-sizing: border-box;
+            }
+            #reporte-print * {
+                box-sizing: border-box;
+                max-width: 100%;
+                word-wrap: break-word;
             }
             #reporte-print .separador {
                 border-top: 1px dashed #000;
                 margin: 3mm 0;
+                width: 100%;
             }
             #reporte-print .titulo {
                 font-size: 10pt;
@@ -109,17 +116,30 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                 font-size: 7pt;
                 margin-bottom: 1.5mm;
             }
+            #reporte-print .campo-vertical {
+                font-size: 7pt;
+                font-weight: normal;
+                display: block;
+                width: 100%;
+                margin-top: 1mm;
+            }
+            #reporte-print .valor-vertical {
+                font-size: 9pt;
+                font-weight: bold;
+                display: block;
+                width: 100%;
+                margin-bottom: 1mm;
+            }
+            #reporte-print .registro-item {
+                display: block;
+                width: 100%;
+                margin: 2mm 0;
+            }
             #reporte-print .valor-grande {
                 font-size: 14pt;
                 font-weight: bold;
                 text-align: center;
                 margin: 2mm 0;
-            }
-            #reporte-print .fila-tabla {
-                display: flex;
-                justify-content: space-between;
-                font-size: 6pt;
-                margin-bottom: 1mm;
             }
             #reporte-print .pie {
                 font-size: 6pt;

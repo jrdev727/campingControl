@@ -580,9 +580,14 @@ async function imprimirReporteEntradas() {
         result.data.por_fecha.forEach((fila, index) => {
             const fechaCorta = fila.fecha.split('-').reverse().join('/');
             contenidoRegistros += `
-                <div class="campo">FECHA: <strong>${fechaCorta}</strong></div>
-                <div class="campo">ENTRADAS: <strong>${fila.cantidad_entradas}</strong></div>
-                <div class="campo">TOTAL: <strong>$${formatearPrecio(fila.total)}</strong></div>
+                <div class="registro-item">
+                    <div class="campo-vertical">FECHA:</div>
+                    <div class="valor-vertical">${fechaCorta}</div>
+                    <div class="campo-vertical">ENTRADAS:</div>
+                    <div class="valor-vertical">${fila.cantidad_entradas}</div>
+                    <div class="campo-vertical">TOTAL:</div>
+                    <div class="valor-vertical">$${formatearPrecio(fila.total)}</div>
+                </div>
                 ${index < result.data.por_fecha.length - 1 ? '<div class="separador"></div>' : ''}
             `;
         });
@@ -593,13 +598,13 @@ async function imprimirReporteEntradas() {
             <div class="titulo">REPORTE DE ENTRADAS</div>
             <div class="subtitulo">Camping Sonrisas</div>
             <div class="separador"></div>
-            <div class="campo" style="text-align: center;">PERIODO:</div>
-            <div class="campo" style="text-align: center; font-weight: bold;">${fechaDesde} a ${fechaHasta}</div>
+            <div class="campo-vertical" style="text-align: center;">PERIODO:</div>
+            <div class="valor-vertical" style="text-align: center;">${fechaDesde}</div>
+            <div class="valor-vertical" style="text-align: center;">a</div>
+            <div class="valor-vertical" style="text-align: center;">${fechaHasta}</div>
             <div class="separador"></div>
-            <div class="campo">
-                <span>Total Ingresos:</span>
-                <span style="float: right; font-weight: bold;">$${formatearPrecio(result.data.totales.total)}</span>
-            </div>
+            <div class="campo-vertical">Total Ingresos:</div>
+            <div class="valor-vertical">$${formatearPrecio(result.data.totales.total)}</div>
             <div class="separador"></div>
             ${contenidoRegistros}
             <div class="separador"></div>
