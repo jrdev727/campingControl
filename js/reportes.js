@@ -428,7 +428,6 @@ async function exportarPDF() {
         doc.setFontSize(6);
         doc.setFont('helvetica', 'bold');
         doc.text('FECHA', 1, y);
-        doc.text('ENT', 28, y);
         doc.text('TOTAL', 47, y, { align: 'right' });
         y += 3;
 
@@ -444,9 +443,6 @@ async function exportarPDF() {
             // Fecha (formato corto)
             const fechaCorta = fila.fecha.split('-').reverse().join('/');
             doc.text(fechaCorta, 1, y);
-
-            // Cantidad de entradas
-            doc.text(`${fila.cantidad_entradas}`, 31, y, { align: 'right' });
 
             // Total
             doc.text(`$${formatearPrecio(fila.total)}`, 47, y, { align: 'right' });
