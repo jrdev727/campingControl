@@ -576,15 +576,14 @@ async function imprimirReporteEntradas() {
             minute: '2-digit'
         });
 
-        let contenidoTabla = '';
-        result.data.por_fecha.forEach(fila => {
+        let contenidoRegistros = '';
+        result.data.por_fecha.forEach((fila, index) => {
             const fechaCorta = fila.fecha.split('-').reverse().join('/');
-            contenidoTabla += `
-                <div class="fila-tabla">
-                    <span>${fechaCorta}</span>
-                    <span>${fila.cantidad_entradas} ent</span>
-                    <span>$${formatearPrecio(fila.total)}</span>
-                </div>
+            contenidoRegistros += `
+                <div class="campo">FECHA: <strong>${fechaCorta}</strong></div>
+                <div class="campo">ENTRADAS: <strong>${fila.cantidad_entradas}</strong></div>
+                <div class="campo">TOTAL: <strong>$${formatearPrecio(fila.total)}</strong></div>
+                ${index < result.data.por_fecha.length - 1 ? '<div class="separador"></div>' : ''}
             `;
         });
 
@@ -602,12 +601,7 @@ async function imprimirReporteEntradas() {
                 <span style="float: right; font-weight: bold;">$${formatearPrecio(result.data.totales.total)}</span>
             </div>
             <div class="separador"></div>
-            <div class="fila-tabla" style="font-weight: bold; margin-bottom: 2mm;">
-                <span>FECHA</span>
-                <span>ENT</span>
-                <span>TOTAL</span>
-            </div>
-            ${contenidoTabla}
+            ${contenidoRegistros}
             <div class="separador"></div>
             <div class="pie">Generado: ${fecha}</div>
             <div class="separador"></div>
