@@ -101,8 +101,11 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                                     <label for="tipo-entrada" class="form-label">Tipo de Entrada</label>
                                     <select class="form-select" id="tipo-entrada" name="tipo_entrada" required>
                                         <option value="turista_adulto">No Residente (Adulto) - $8.000</option>
-                                        <option value="turista_niño">No Residente (Niño) - $5.000</option>
-                                        <option value="local">Residente - $3.000</option>
+                                        <option value="turista_niño">No Residente (Niño) - $4.000</option>
+                                        <option value="turista_jubilado">No Residente (Jubilado) - $4.800</option>
+                                        <option value="local_adulto">Residente (Adulto) - $4.000</option>
+                                        <option value="local_niño">Residente (Niño) - GRATIS</option>
+                                        <option value="local_jubilado">Residente (Jubilado) - $2.400</option>
                                     </select>
                                 </div>
 
@@ -134,33 +137,63 @@ $esAdmin = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador');
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
-                                <div class="col-12 col-sm-4">
+                                <div class="col-12 col-sm-6 col-md-4">
                                     <div class="text-center p-3" style="background-color: var(--brand-50); border-radius: 12px;">
-                                        <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 4px;">
+                                        <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 4px;">
                                             No Residente Adulto
                                         </div>
-                                        <div style="font-size: 24px; font-weight: 700; color: var(--brand-600);">
+                                        <div style="font-size: 20px; font-weight: 700; color: var(--brand-600);">
                                             $8.000
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-4">
+                                <div class="col-12 col-sm-6 col-md-4">
                                     <div class="text-center p-3" style="background-color: var(--success-50); border-radius: 12px;">
-                                        <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 4px;">
+                                        <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 4px;">
                                             No Residente Niño
                                         </div>
-                                        <div style="font-size: 24px; font-weight: 700; color: var(--success-600);">
-                                            $5.000
+                                        <div style="font-size: 20px; font-weight: 700; color: var(--success-600);">
+                                            $4.000
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-4">
-                                    <div class="text-center p-3" style="background-color: var(--warning-50); border-radius: 12px;">
-                                        <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 4px;">
-                                            Residente
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <div class="text-center p-3" style="background-color: var(--purple-50); border-radius: 12px;">
+                                        <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 4px;">
+                                            No Residente Jubilado
                                         </div>
-                                        <div style="font-size: 24px; font-weight: 700; color: var(--warning-600);">
-                                            $3.000
+                                        <div style="font-size: 20px; font-weight: 700; color: var(--purple-600);">
+                                            $4.800
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <div class="text-center p-3" style="background-color: var(--warning-50); border-radius: 12px;">
+                                        <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 4px;">
+                                            Residente Adulto
+                                        </div>
+                                        <div style="font-size: 20px; font-weight: 700; color: var(--warning-600);">
+                                            $4.000
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <div class="text-center p-3" style="background-color: var(--green-50); border-radius: 12px;">
+                                        <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 4px;">
+                                            Residente Niño
+                                        </div>
+                                        <div style="font-size: 20px; font-weight: 700; color: var(--green-600);">
+                                            GRATIS
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <div class="text-center p-3" style="background-color: var(--orange-50); border-radius: 12px;">
+                                        <div style="font-size: 12px; color: var(--gray-600); margin-bottom: 4px;">
+                                            Residente Jubilado
+                                        </div>
+                                        <div style="font-size: 20px; font-weight: 700; color: var(--orange-600);">
+                                            $2.400
                                         </div>
                                     </div>
                                 </div>

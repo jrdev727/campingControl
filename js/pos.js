@@ -25,13 +25,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const precios = {
     'turista_adulto': 8000,
-    'turista_niño': 5000,
+    'turista_niño': 4000,
+    'turista_jubilado': 4800,
+    'local_adulto': 4000,
+    'local_niño': 0,
+    'local_jubilado': 2400,
+    // Compatibilidad con registros antiguos
     'local': 3000
 };
 
 const nombres = {
     'turista_adulto': 'No Residente (Adulto)',
     'turista_niño': 'No Residente (Niño)',
+    'turista_jubilado': 'No Residente (Jubilado)',
+    'local_adulto': 'Residente (Adulto)',
+    'local_niño': 'Residente (Niño)',
+    'local_jubilado': 'Residente (Jubilado)',
+    // Compatibilidad con registros antiguos
     'local': 'Residente'
 };
 
