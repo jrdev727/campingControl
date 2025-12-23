@@ -13,8 +13,12 @@ $tipo_entrada = $_POST['tipo_entrada'] ?? '';
 // Definir precios según tipo de entrada
 $precios = [
     'turista_adulto' => 8000,
-    'turista_niño' => 5000,
-    'local' => 3000
+    'turista_niño' => 4000,
+    'turista_jubilado' => 4800,
+    'local_adulto' => 4000,
+    'local_niño' => 0,
+    'local_jubilado' => 2400,
+    'local' => 3000  // Compatibilidad con registros antiguos
 ];
 
 // Validar que el tipo de entrada existe
