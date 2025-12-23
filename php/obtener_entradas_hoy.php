@@ -17,7 +17,7 @@ try {
     // Obtener entradas del día actual
     $sql = "SELECT id, tipo_entrada, precio,
             DATE_FORMAT(fecha_hora, '%H:%i') as hora,
-            DATE_FORMAT(fecha_hora, '%Y-%m-%d %H:%i:%s') as fecha_completa,
+            DATE_FORMAT(fecha_hora, '%Y-%m-%d %H:%i:%s') as fecha_hora,
             estado
             FROM entradas
             WHERE DATE(fecha_hora) = CURDATE()
