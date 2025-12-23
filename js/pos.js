@@ -65,7 +65,6 @@ const precios = {
     'local_adulto': 4000,
     'local_niño': 0,
     'local_jubilado': 2400,
-    // Compatibilidad con registros antiguos
     'local': 3000
 };
 
@@ -76,7 +75,6 @@ const nombres = {
     'local_adulto': 'Residente (Adulto)',
     'local_niño': 'Residente (Niño)',
     'local_jubilado': 'Residente (Jubilado)',
-    // Compatibilidad con registros antiguos
     'local': 'Residente'
 };
 
@@ -87,6 +85,18 @@ document.getElementById('formulario-agregar')?.addEventListener('submit', functi
     const tipoEntrada = document.getElementById('tipo-entrada').value;
     const cantidad = parseInt(document.getElementById('cantidad').value);
 
+    // Debug: verificar que el tipo existe
+    console.log('Tipo entrada:', tipoEntrada);
+    console.log('Precio encontrado:', precios[tipoEntrada]);
+    console.log('Nombre encontrado:', nombres[tipoEntrada]);
+
+    // Validar que el precio existe
+    if (precios[tipoEntrada] === undefined) {
+        console.error('Precio no encontrado para tipo:', tipoEntrada);
+        alert('Error: Tipo de entrada no válido');
+        return;
+    }
+
     // Buscar si ya existe en el carrito
     const existente = carrito.find(item => item.tipo === tipoEntrada);
 
@@ -95,7 +105,7 @@ document.getElementById('formulario-agregar')?.addEventListener('submit', functi
     } else {
         carrito.push({
             tipo: tipoEntrada,
-            nombre: nombres[tipoEntrada],
+            nombre: nombres[tipoEntrada] || tipoEntrada,
             precio: precios[tipoEntrada],
             cantidad: cantidad
         });
@@ -136,7 +146,9 @@ function actualizarCarrito() {
     let totalDinero = 0;
 
     carrito.forEach((item, index) => {
-        const subtotal = item.precio * item.cantidad;
+        // Protección contra precios undefined
+        const precio = item.precio ?? 0;
+        const subtotal = precio * item.cantidad;
         totalCantidad += item.cantidad;
         totalDinero += subtotal;
 
@@ -145,7 +157,7 @@ function actualizarCarrito() {
                 <div class="entrada-item-info">
                     <div style="font-weight: 600; color: var(--gray-900);">${item.nombre}</div>
                     <div style="font-size: 14px; color: var(--gray-600);">
-                        ${item.cantidad} x $${item.precio.toLocaleString('es-AR')} = $${subtotal.toLocaleString('es-AR')}
+                        ${item.cantidad} x $${precio.toLocaleString('es-AR')} = $${subtotal.toLocaleString('es-AR')}
                     </div>
                 </div>
                 <div class="entrada-item-actions">
