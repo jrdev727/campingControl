@@ -3,6 +3,7 @@
 # ============================================
 # NO subir archivos con credenciales de base de datos
 php/conexion.php
+php/conexion_infinityfree.php
 CONFIGURACION_INFINITYFREE.txt
 
 # Archivos de depuración y utilidades locales
