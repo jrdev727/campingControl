@@ -301,6 +301,8 @@ async function cargarUltimasEntradas() {
         const response = await fetch('php/obtener_entradas_hoy.php');
         const result = await response.json();
 
+        console.log('Resultado obtener_entradas_hoy:', result);
+
         const tbody = document.getElementById('tabla-ultimas-entradas');
 
         if (!result.success || result.data.length === 0) {
@@ -317,6 +319,7 @@ async function cargarUltimasEntradas() {
 
         // Guardar entradas en variable global para reimprimir
         entradasDelDia = result.data;
+        console.log('Entradas del día guardadas:', entradasDelDia);
 
         const nombresTipos = {
             'turista_adulto': 'No Residente (Adulto)',
@@ -410,10 +413,16 @@ async function anularEntrada(entradaId) {
 
 // Reimprimir ticket de una entrada
 function reimprimirTicket(entradaId) {
+    console.log('reimprimirTicket llamado con ID:', entradaId);
+    console.log('entradasDelDia disponibles:', entradasDelDia);
+
     // Buscar la entrada en el array
     const entrada = entradasDelDia.find(e => e.id == entradaId);
 
+    console.log('Entrada encontrada:', entrada);
+
     if (!entrada) {
+        console.error('No se encontró la entrada con ID:', entradaId);
         mostrarAlerta('No se pudo encontrar la entrada', 'danger');
         return;
     }
