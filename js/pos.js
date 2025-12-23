@@ -1,6 +1,7 @@
 // Sistema de Punto de Venta
 let carrito = [];
 let entradaIdAAnular = null; // ID de entrada a anular
+let entradasDelDia = []; // Almacenar entradas del día para reimprimir
 
 // Cargar últimas entradas al iniciar y configurar modal
 document.addEventListener('DOMContentLoaded', function() {
@@ -303,6 +304,7 @@ async function cargarUltimasEntradas() {
         const tbody = document.getElementById('tabla-ultimas-entradas');
 
         if (!result.success || result.data.length === 0) {
+            entradasDelDia = []; // Limpiar array
             tbody.innerHTML = `
                 <tr>
                     <td colspan="5" class="text-center text-gray-500">
@@ -312,6 +314,9 @@ async function cargarUltimasEntradas() {
             `;
             return;
         }
+
+        // Guardar entradas en variable global para reimprimir
+        entradasDelDia = result.data;
 
         const nombresTipos = {
             'turista_adulto': 'No Residente (Adulto)',
@@ -332,7 +337,7 @@ async function cargarUltimasEntradas() {
 
             const botones = entrada.estado === 'activo'
                 ? `<div class="d-flex gap-1">
-                       <button class="btn btn-sm btn-outline-primary" onclick='reimprimirTicket(${JSON.stringify(entrada)})' title="Reimprimir">
+                       <button class="btn btn-sm btn-outline-primary" onclick="reimprimirTicket(${entrada.id})" title="Reimprimir">
                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                            </svg>
@@ -404,7 +409,15 @@ async function anularEntrada(entradaId) {
 }
 
 // Reimprimir ticket de una entrada
-function reimprimirTicket(entrada) {
+function reimprimirTicket(entradaId) {
+    // Buscar la entrada en el array
+    const entrada = entradasDelDia.find(e => e.id == entradaId);
+
+    if (!entrada) {
+        mostrarAlerta('No se pudo encontrar la entrada', 'danger');
+        return;
+    }
+
     const nombreTipo = nombres[entrada.tipo_entrada] || entrada.tipo_entrada;
 
     // Formatear fecha y hora
