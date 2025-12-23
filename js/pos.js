@@ -316,7 +316,11 @@ async function cargarUltimasEntradas() {
         const nombresTipos = {
             'turista_adulto': 'No Residente (Adulto)',
             'turista_niño': 'No Residente (Niño)',
-            'local': 'Residente'
+            'turista_jubilado': 'No Residente (Jubilado)',
+            'local': 'Residente',
+            'local_adulto': 'Residente (Adulto)',
+            'local_niño': 'Residente (Niño)',
+            'local_jubilado': 'Residente (Jubilado)'
         };
 
         let html = '';
@@ -326,13 +330,19 @@ async function cargarUltimasEntradas() {
                 ? '<span class="badge badge-success">Activo</span>'
                 : '<span class="badge badge-danger">Anulado</span>';
 
-            const botonAnular = entrada.estado === 'activo'
-                ? `<button class="btn btn-sm btn-outline-danger" onclick="confirmarAnular(${entrada.id})">
-                       <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                       </svg>
-                       Anular
-                   </button>`
+            const botones = entrada.estado === 'activo'
+                ? `<div class="d-flex gap-1">
+                       <button class="btn btn-sm btn-outline-primary" onclick='reimprimirTicket(${JSON.stringify(entrada)})' title="Reimprimir">
+                           <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                           </svg>
+                       </button>
+                       <button class="btn btn-sm btn-outline-danger" onclick="confirmarAnular(${entrada.id})" title="Anular">
+                           <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                           </svg>
+                       </button>
+                   </div>`
                 : '<span class="text-muted">—</span>';
 
             html += `
@@ -341,7 +351,7 @@ async function cargarUltimasEntradas() {
                     <td>${nombreTipo}</td>
                     <td>$${entrada.precio.toLocaleString('es-AR')}</td>
                     <td>${estadoBadge}</td>
-                    <td>${botonAnular}</td>
+                    <td>${botones}</td>
                 </tr>
             `;
         });
@@ -391,4 +401,54 @@ async function anularEntrada(entradaId) {
         console.error('Error al anular entrada:', error);
         mostrarAlerta('Error al anular la entrada', 'danger');
     }
+}
+
+// Reimprimir ticket de una entrada
+function reimprimirTicket(entrada) {
+    const nombreTipo = nombres[entrada.tipo_entrada] || entrada.tipo_entrada;
+
+    // Formatear fecha y hora
+    const fechaHora = new Date(entrada.fecha_hora);
+    const dia = fechaHora.getDate().toString().padStart(2, '0');
+    const mes = (fechaHora.getMonth() + 1).toString().padStart(2, '0');
+    const año = fechaHora.getFullYear();
+    const hora = fechaHora.getHours().toString().padStart(2, '0');
+    const minutos = fechaHora.getMinutes().toString().padStart(2, '0');
+
+    const fechaFormateada = `${dia}/${mes}/${año}`;
+    const horaFormateada = `${hora}:${minutos}`;
+
+    // Generar contenido del ticket
+    const contenido = `
+        <pre style="margin: 0; padding: 0; font-size: 12px; line-height: 1.4;">
+=============================
+  CAMPING SONRISAS
+    COMPARTIDAS
+=============================
+
+Entrada #${entrada.id}
+${nombreTipo}
+
+Fecha: ${fechaFormateada}
+Hora: ${horaFormateada}
+Precio: $${parseFloat(entrada.precio).toLocaleString('es-AR')}
+-----------------------------
+</pre>
+    `;
+
+    document.getElementById('ticket-contenido').innerHTML = contenido;
+
+    // Mostrar el ticket temporalmente para impresión
+    const ticketDiv = document.getElementById('ticket-print');
+    ticketDiv.style.display = 'block';
+
+    // Imprimir
+    setTimeout(() => {
+        window.print();
+
+        // Ocultar el ticket después de imprimir
+        setTimeout(() => {
+            ticketDiv.style.display = 'none';
+        }, 500);
+    }, 100);
 }
