@@ -3,6 +3,40 @@ let carrito = [];
 let entradaIdAAnular = null; // ID de entrada a anular
 let entradasDelDia = []; // Almacenar entradas del día para reimprimir
 
+// Función para bloquear la interfaz después de registrar venta
+function bloquearInterfaz() {
+    // Deshabilitar formulario de agregar
+    document.getElementById('tipo-entrada').disabled = true;
+    document.getElementById('cantidad').disabled = true;
+    document.querySelector('#formulario-agregar button[type="submit"]').disabled = true;
+
+    // Deshabilitar botón limpiar
+    const btnLimpiar = document.getElementById('btn-limpiar');
+    if (btnLimpiar) btnLimpiar.disabled = true;
+
+    // Deshabilitar botones de eliminar del carrito
+    document.querySelectorAll('.entrada-item-actions button').forEach(btn => {
+        btn.disabled = true;
+    });
+}
+
+// Función para desbloquear la interfaz después de imprimir
+function desbloquearInterfaz() {
+    // Habilitar formulario de agregar
+    document.getElementById('tipo-entrada').disabled = false;
+    document.getElementById('cantidad').disabled = false;
+    document.querySelector('#formulario-agregar button[type="submit"]').disabled = false;
+
+    // Habilitar botón limpiar
+    const btnLimpiar = document.getElementById('btn-limpiar');
+    if (btnLimpiar) btnLimpiar.disabled = false;
+
+    // Habilitar botones de eliminar del carrito
+    document.querySelectorAll('.entrada-item-actions button').forEach(btn => {
+        btn.disabled = false;
+    });
+}
+
 // Cargar últimas entradas al iniciar y configurar modal
 document.addEventListener('DOMContentLoaded', function() {
     cargarUltimasEntradas();
@@ -144,6 +178,10 @@ document.getElementById('btn-limpiar')?.addEventListener('click', function() {
         carrito = [];
         actualizarCarrito();
         document.getElementById('btn-imprimir').style.display = 'none';
+        document.getElementById('btn-registrar').style.display = 'block';
+
+        // Desbloquear interfaz si estaba bloqueada
+        desbloquearInterfaz();
     }
 });
 
@@ -185,6 +223,9 @@ document.getElementById('btn-registrar')?.addEventListener('click', async functi
 
         if (todosExitosos) {
             mostrarAlerta('¡Venta registrada exitosamente! Total: ' + resultados.length + ' entradas', 'success');
+
+            // Bloquear interfaz hasta que se imprima
+            bloquearInterfaz();
 
             // Mostrar botón de imprimir
             document.getElementById('btn-imprimir').style.display = 'block';
@@ -236,6 +277,10 @@ document.getElementById('btn-imprimir')?.addEventListener('click', function() {
     const nombresTipos = {
         'turista_adulto': 'No Residente (Adulto)',
         'turista_niño': 'No Residente (Niño)',
+        'turista_jubilado': 'No Residente (Jubilado)',
+        'local_adulto': 'Residente (Adulto)',
+        'local_niño': 'Residente (Niño)',
+        'local_jubilado': 'Residente (Jubilado)',
         'local': 'Residente'
     };
 
@@ -279,6 +324,9 @@ Precio: $${item.precio.toLocaleString('es-AR')}
             actualizarCarrito();
             document.getElementById('btn-imprimir').style.display = 'none';
             document.getElementById('btn-registrar').style.display = 'block';
+
+            // Desbloquear interfaz para nueva venta
+            desbloquearInterfaz();
         }, 500);
     }, 100);
 });
