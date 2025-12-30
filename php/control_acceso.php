@@ -5,6 +5,8 @@ error_reporting(E_ALL);
 header('Content-Type: application/json');
 
 require_once 'conexion.php';
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+$conn->query("SET time_zone = '-03:00'");
 
 // Obtener datos del formulario
 $dni = $_POST['dni'] ?? '';

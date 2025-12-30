@@ -5,6 +5,8 @@ header('Content-Type: application/json');
 
 session_start();
 require_once 'conexion.php';
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+$conn->query("SET time_zone = '-03:00'");
 
 // Verificar autenticación
 if (!isset($_SESSION['usuario_id'])) {
