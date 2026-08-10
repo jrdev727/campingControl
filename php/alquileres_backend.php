@@ -1,6 +1,5 @@
 <?php
-header('Content-Type: application/json');
-require_once 'conexion.php';
+require_once 'api_init.php';
 
 // Obtener datos del formulario
 $tipo = $_POST['tipo'] ?? '';

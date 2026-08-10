@@ -20,7 +20,8 @@ document.getElementById('formulario-login')?.addEventListener('submit', function
 
     const formData = new FormData(this);
 
-    fetch('php/login.php', {
+    // Use URL global API_BASE_URL (definida en auth.js)
+    fetch(`${API_BASE_URL}/login.php`, {
         method: 'POST',
         body: formData
     })
@@ -28,16 +29,23 @@ document.getElementById('formulario-login')?.addEventListener('submit', function
         .then(data => {
             alerta.classList.remove('d-none');
 
-            if (data.success) {
+            if (data.success && data.token) {
+                // Guardar token JWT y datos del usuario
+                localStorage.setItem('jwt_token', data.token);
+                localStorage.setItem('user_info', JSON.stringify({
+                    usuario: data.usuario || formData.get('usuario'),
+                    rol: data.rol || 'usuario'
+                }));
+
                 alerta.textContent = "¡Bienvenido! Redirigiendo...";
                 alerta.classList.add('alert-success');
 
                 // Keep disabled while redirecting
                 setTimeout(() => {
-                    window.location.href = data.redirect;
+                    window.location.href = 'index.html'; // Always go to index.html initially
                 }, 800);
             } else {
-                alerta.textContent = data.message;
+                alerta.textContent = data.message || "Usuario o contraseña incorrectos";
                 alerta.classList.add('alert-danger');
 
                 // Reset Loading State
@@ -84,7 +92,7 @@ document.getElementById('formulario-ingreso')?.addEventListener('submit', functi
 
     const formData = new FormData(this);
 
-    fetch('php/control_acceso.php', {
+    window.fetchWithAuth(`${API_BASE_URL}/control_acceso.php`, {
         method: 'POST',
         body: formData
     })
@@ -112,7 +120,7 @@ document.getElementById('reserva-quincho')?.addEventListener('submit', function 
 
     const formData = new FormData(this);
 
-    fetch('php/alquileres_backend.php', {
+    window.fetchWithAuth(`${API_BASE_URL}/alquileres_backend.php`, {
         method: 'POST',
         body: formData
     })
@@ -140,7 +148,7 @@ document.getElementById('alquiler-reposera')?.addEventListener('submit', functio
 
     const formData = new FormData(this);
 
-    fetch('php/alquileres_backend.php', {
+    window.fetchWithAuth(`${API_BASE_URL}/alquileres_backend.php`, {
         method: 'POST',
         body: formData
     })

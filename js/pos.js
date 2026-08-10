@@ -220,7 +220,7 @@ document.getElementById('btn-registrar')?.addEventListener('click', async functi
                 formData.append('edad', 0); // Edad por defecto
 
                 promesas.push(
-                    fetch('php/control_acceso.php', {
+                    window.fetchWithAuth(`${API_BASE_URL}/control_acceso.php`, {
                         method: 'POST',
                         body: formData
                     }).then(r => r.json())
@@ -358,7 +358,7 @@ function mostrarAlerta(mensaje, tipo) {
 // Cargar últimas entradas del día
 async function cargarUltimasEntradas() {
     try {
-        const response = await fetch('php/obtener_entradas_hoy.php');
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/obtener_entradas_hoy.php`);
         const result = await response.json();
 
         console.log('Resultado obtener_entradas_hoy:', result);
@@ -451,7 +451,7 @@ async function anularEntrada(entradaId) {
         const formData = new FormData();
         formData.append('entrada_id', entradaId);
 
-        const response = await fetch('php/anular_entrada.php', {
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/anular_entrada.php`, {
             method: 'POST',
             body: formData
         });

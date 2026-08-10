@@ -1,10 +1,5 @@
 <?php
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
-header('Content-Type: application/json');
-
-session_start();
-require_once 'conexion.php';
+require_once 'api_init.php';
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 $conn->query("SET time_zone = '-03:00'");
 

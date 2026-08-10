@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function cargarEstadisticas() {
-    return fetch('php/dashboard_stats.php')
+    return window.fetchWithAuth(`${API_BASE_URL}/dashboard_stats.php`)
         .then(response => response.json())
         .then(result => {
             if (result.success) {

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Cargar métricas superiores
 async function cargarMetricasSuperiores() {
     try {
-        const response = await fetch('php/dashboard_stats.php');
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/dashboard_stats.php`);
         const result = await response.json();
 
         if (result.success) {
@@ -50,7 +50,7 @@ async function buscarEntradas() {
             tipo: tipoEntrada
         });
 
-        const response = await fetch(`php/reportes_entradas.php?${params}`);
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/reportes_entradas.php?${params}`);
         const result = await response.json();
 
         if (result.success) {
@@ -202,7 +202,7 @@ async function generarReporteFinanciero() {
             fecha_hasta: fechaHasta
         });
 
-        const response = await fetch(`php/reporte_financiero.php?${params}`);
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/reporte_financiero.php?${params}`);
         const result = await response.json();
 
         if (result.success) {
@@ -232,7 +232,7 @@ async function exportarPDFFinanciero() {
             fecha_hasta: fechaHasta
         });
 
-        const response = await fetch(`php/reporte_financiero.php?${params}`);
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/reporte_financiero.php?${params}`);
         const result = await response.json();
 
         if (!result.success) {
@@ -354,7 +354,7 @@ async function exportarPDF() {
             fecha_hasta: fechaHasta
         });
 
-        const response = await fetch(`php/reporte_pdf.php?${params}`);
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/reporte_pdf.php?${params}`);
         const result = await response.json();
 
         if (!result.success) {
@@ -552,7 +552,7 @@ async function imprimirReporteEntradas() {
             fecha_hasta: fechaHasta
         });
 
-        const response = await fetch(`php/reporte_pdf.php?${params}`);
+        const response = await window.fetchWithAuth(`${API_BASE_URL}/reporte_pdf.php?${params}`);
         const result = await response.json();
 
         if (!result.success) {

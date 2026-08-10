@@ -3,10 +3,13 @@
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
+require_once 'cors.php';
+require_once 'jwt_helper.php';
+
 // Set JSON header before any output
 header('Content-Type: application/json');
 
-session_start();
+// session_start(); // Ya no usamos sesiones
 require_once 'conexion.php';
 
 // Validate POST data
@@ -49,17 +52,25 @@ if ($resultado->num_rows > 0) {
     }
 
     if ($password_valida) {
-        // Iniciar sesión
-        $_SESSION['usuario_id'] = $usuario_db['id'];
-        $_SESSION['usuario'] = $usuario_db['usuario'];
-        $_SESSION['rol'] = strtolower($usuario_db['nombre']); // Convertir a minúsculas para compatibilidad
+        $rol = strtolower($usuario_db['nombre']);
+        
+        // Generar Token JWT
+        $payload = [
+            'usuario_id' => $usuario_db['id'],
+            'usuario' => $usuario_db['usuario'],
+            'rol' => $rol,
+            'exp' => time() + (60 * 60 * 24) // Expira en 24 horas
+        ];
+        
+        $token = JWT::encode($payload);
 
-        // Redirigir según el rol
-        if (strtolower($usuario_db['nombre']) === 'administrador') {
-            echo json_encode(["success" => true, "redirect" => "admin.php"]);
-        } else {
-            echo json_encode(["success" => true, "redirect" => "index.php"]);
-        }
+        echo json_encode([
+            "success" => true, 
+            "token" => $token,
+            "usuario" => $usuario_db['usuario'],
+            "rol" => $rol,
+            "redirect" => ($rol === 'administrador') ? "admin.html" : "index.html"
+        ]);
     } else {
         echo json_encode(["success" => false, "message" => "Contraseña incorrecta."]);
     }
