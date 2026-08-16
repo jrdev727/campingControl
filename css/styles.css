@@ -966,4 +966,80 @@ body {
 .breakdown-item:last-child {
     border-bottom: none;
     padding-bottom: 0;
+}/* ===== Modo Nocturno (Dark Mode) ===== */
+body.dark-mode {
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+body.dark-mode .sidebar {
+    background-color: #1e293b;
+    border-right: 1px solid #334155;
+}
+body.dark-mode .app-header {
+    background-color: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+body.dark-mode .header-title,
+body.dark-mode #header-user-name {
+    color: #f8fafc !important;
+}
+body.dark-mode .card,
+body.dark-mode .bg-white {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+}
+body.dark-mode .card-header,
+body.dark-mode .card-body {
+    background-color: #1e293b !important;
+}
+body.dark-mode .text-gray-900,
+body.dark-mode .text-gray-800,
+body.dark-mode .card-title,
+body.dark-mode label,
+body.dark-mode th {
+    color: #f8fafc !important;
+}
+body.dark-mode .text-gray-600,
+body.dark-mode .text-gray-500,
+body.dark-mode .text-muted {
+    color: #94a3b8 !important;
+}
+body.dark-mode .table,
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    color: #f8fafc;
+    background-color: #0f172a;
+    border-color: #334155;
+}
+body.dark-mode .table-hover tbody tr:hover {
+    background-color: #334155;
+}
+body.dark-mode .bg-gray-50,
+body.dark-mode .bg-light {
+    background-color: #0f172a !important;
+}
+body.dark-mode .btn-light {
+    background-color: #334155;
+    color: #f8fafc;
+    border-color: #475569;
+}
+body.dark-mode .sidebar-link {
+    color: #cbd5e1;
+}
+body.dark-mode .sidebar-link:hover,
+body.dark-mode .sidebar-link.active {
+    background-color: #334155;
+    color: #ffffff;
+}
+body.dark-mode .list-group-item {
+    background-color: #1e293b;
+    color: #f8fafc;
+    border-color: #334155;
+}
+body.dark-mode .list-group-item:hover {
+    background-color: #334155;
+}
+body.dark-mode .pos-total-section {
+    background-color: #0f172a;
+    border-top: 1px dashed #334155;
 }
