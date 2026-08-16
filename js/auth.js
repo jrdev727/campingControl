@@ -19,6 +19,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userInfo = JSON.parse(localStorage.getItem('user_info'));
         if (userInfo) {
             setupUI(userInfo);
+            // Configurar Modo Nocturno
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeIconMoon = document.getElementById('theme-icon-moon');
+            const themeIconSun = document.getElementById('theme-icon-sun');
+            
+            // Cargar preferencia guardada
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (themeIconMoon) themeIconMoon.style.display = 'none';
+                if (themeIconSun) themeIconSun.style.display = 'block';
+            }
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('dark-mode');
+                    const isDark = document.body.classList.contains('dark-mode');
+                    
+                    // Alternar iconos
+                    if (themeIconMoon) themeIconMoon.style.display = isDark ? 'none' : 'block';
+                    if (themeIconSun) themeIconSun.style.display = isDark ? 'block' : 'none';
+                    
+                    // Guardar preferencia
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                });
+            }
         }
     } catch (e) {
         console.error('Error parseando user_info', e);
