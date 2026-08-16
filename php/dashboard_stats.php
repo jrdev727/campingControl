@@ -76,16 +76,8 @@ try {
     }
     $stats['tipos_entrada'] = $tipos_entrada;
 
-    // 5. Disponibilidad de recursos (Quinchos y Reposeras)
-    $sql_inventario = "SELECT tipo_recurso, cantidad_disponible
-                       FROM inventario
-                       WHERE tipo_recurso IN ('Quincho', 'Reposera')";
-    $resultado_inventario = $conn->query($sql_inventario);
-    $inventario = [];
-    while ($row = $resultado_inventario->fetch_assoc()) {
-        $inventario[$row['tipo_recurso']] = (int)$row['cantidad_disponible'];
-    }
-    $stats['inventario'] = $inventario;
+    // 5. Inventario removido (ya no se usa)
+    $stats['inventario'] = [];
 
     // 6. Últimas 10 entradas
     $sql_ultimas = "SELECT id, dni_cliente, tipo_entrada, precio,
