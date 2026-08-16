@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://123.45.67.89/php'; // TODO: Update with real VPS IP/Domain
+const API_BASE_URL = 'http://159.223.179.252/php'; // API del VPS de Digital Ocean
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Inyectar HTML de Sidebar y Header
