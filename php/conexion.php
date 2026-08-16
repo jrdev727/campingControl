@@ -3,9 +3,9 @@
 date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "camping_sonrisas";
+$username = "camping_user";
+$password = "Camping2026!";
+$dbname = "camping_db";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
