@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://159.223.179.252/php'; // API del VPS de Digital Ocean
+const API_BASE_URL = 'https://api.jonaramdev.com/php'; // API del VPS de Digital Ocean
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Inyectar HTML de Sidebar y Header
