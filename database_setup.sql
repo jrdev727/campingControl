@@ -4,11 +4,11 @@
 -- ============================================
 
 -- Crear base de datos si no existe
-CREATE DATABASE IF NOT EXISTS camping_sonrisas
+CREATE DATABASE IF NOT EXISTS camping_db
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
-USE camping_sonrisas;
+USE camping_db;
 
 -- ============================================
 -- Tabla: usuarios
