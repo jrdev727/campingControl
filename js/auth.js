@@ -61,6 +61,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (sidebar && backdrop) {
+        sidebar.classList.toggle('mobile-open');
+        if (sidebar.classList.contains('mobile-open')) {
+            backdrop.style.display = 'block';
+        } else {
+            backdrop.style.display = 'none';
+        }
+    }
+};
+
 async function loadComponent(containerId, url) {
     const container = document.getElementById(containerId);
     if (!container) return;
