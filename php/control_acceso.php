@@ -26,8 +26,7 @@ if (!isset($precios[$tipo_entrada])) {
 
 $precio = $precios[$tipo_entrada];
 
-// Obtener usuario_id de la sesión
-session_start();
+// Obtener usuario_id de la sesión (seteada por api_init.php)
 $usuario_id = $_SESSION['usuario_id'] ?? null;
 
 // Insertar datos en la tabla de entradas usando prepared statement
